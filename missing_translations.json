@@ -1,0 +1,354 @@
+{
+    "acceptance_of_terms": {
+        "en": "Acceptance of Terms",
+        "ur": "شرائط کی منظوری"
+    },
+    "acceptance_of_terms_desc": {
+        "en": "By using this app, you agree to comply with and be bound by these terms.",
+        "ur": "اس ایپ کو استعمال کر کے، آپ ان شرائط کی تعمیل کرنے اور ان کے پابند ہونے سے اتفاق کرتے ہیں۔"
+    },
+    "account_data_missing_error": {
+        "en": "Account data is missing. Please contact support.",
+        "ur": "اکاؤنٹ کا ڈیٹا غائب ہے۔ براہ کرم سپورٹ سے رابطہ کریں۔"
+    },
+    "back_to_login": {
+        "en": "Back to Login",
+        "ur": "لاگ ان پر واپس جائیں"
+    },
+    "changes_to_terms": {
+        "en": "Changes to Terms",
+        "ur": "شرائط میں تبدیلیاں"
+    },
+    "changes_to_terms_desc": {
+        "en": "We reserve the right to modify these terms at any time.",
+        "ur": "ہم کسی بھی وقت ان شرائط میں ترمیم کرنے کا حق محفوظ رکھتے ہیں۔"
+    },
+    "choose_registration_method": {
+        "en": "Choose Registration Method",
+        "ur": "رجسٹریشن کا طریقہ منتخب کریں"
+    },
+    "completed": {
+        "en": "Completed",
+        "ur": "مکمل"
+    },
+    "contact_us": {
+        "en": "Contact Us",
+        "ur": "ہم سے رابطہ کریں"
+    },
+    "contact_us_desc": {
+        "en": "For any queries, please reach out to our support team.",
+        "ur": "کسی بھی سوال کے لیے، براہ کرم ہماری سپورٹ ٹیم سے رابطہ کریں۔"
+    },
+    "could_not_open_sms": {
+        "en": "Could not open SMS app",
+        "ur": "ایس ایم ایس ایپ نہیں کھل سکی"
+    },
+    "create_account_subtitle_provider": {
+        "en": "Fill in the details to start providing services",
+        "ur": "سروسز فراہم کرنا شروع کرنے کے لیے تفصیلات بھریں"
+    },
+    "create_account_title": {
+        "en": "Create Account",
+        "ur": "اکاؤنٹ بنائیں"
+    },
+    "customer_desc": {
+        "en": "Hire professionals for your needs",
+        "ur": "اپنی ضروریات کے لیے پیشہ ور افراد کی خدمات حاصل کریں"
+    },
+    "customer_reg_card": {
+        "en": "Register as Customer",
+        "ur": "بطور گاہک رجسٹر کریں"
+    },
+    "customer_responsibilities": {
+        "en": "Customer Responsibilities",
+        "ur": "گاہک کی ذمہ داریاں"
+    },
+    "customer_responsibilities_desc": {
+        "en": "Customers must provide accurate information and pay for services.",
+        "ur": "گاہکوں کو درست معلومات فراہم کرنی چاہئیں اور سروسز کے لیے ادائیگی کرنی چاہیے۔"
+    },
+    "data_security": {
+        "en": "Data Security",
+        "ur": "ڈیٹا کی حفاظت"
+    },
+    "data_security_desc": {
+        "en": "We take reasonable measures to protect your personal information.",
+        "ur": "ہم آپ کی ذاتی معلومات کی حفاظت کے لیے معقول اقدامات کرتے ہیں۔"
+    },
+    "email_tab": {
+        "en": "Email",
+        "ur": "ای میل"
+    },
+    "enter_6_digit_otp_hint": {
+        "en": "Enter 6-digit code",
+        "ur": "6 ہندسوں کا کوڈ درج کریں"
+    },
+    "failed_to_load_reviews": {
+        "en": "Failed to load reviews",
+        "ur": "تبصرے لوڈ کرنے میں ناکامی"
+    },
+    "forgot_password_subtitle": {
+        "en": "Enter your email to receive a reset link",
+        "ur": "ری سیٹ لنک حاصل کرنے کے لیے اپنی ای میل درج کریں"
+    },
+    "general_category": {
+        "en": "General Category",
+        "ur": "عام کیٹیگری"
+    },
+    "get_otp": {
+        "en": "Get OTP",
+        "ur": "OTP حاصل کریں"
+    },
+    "how_we_use_info": {
+        "en": "How We Use Information",
+        "ur": "ہم معلومات کا استعمال کیسے کرتے ہیں"
+    },
+    "how_we_use_info_desc": {
+        "en": "We use your data to provide and improve our services.",
+        "ur": "ہم آپ کا ڈیٹا اپنی خدمات فراہم کرنے اور بہتر بنانے کے لیے استعمال کرتے ہیں۔"
+    },
+    "information_sharing": {
+        "en": "Information Sharing",
+        "ur": "معلومات کا اشتراک"
+    },
+    "information_sharing_desc": {
+        "en": "We do not share your private data with third parties without consent.",
+        "ur": "ہم رضامندی کے بغیر آپ کا نجی ڈیٹا تیسرے فریق کے ساتھ شیئر نہیں کرتے ہیں۔"
+    },
+    "information_we_collect": {
+        "en": "Information We Collect",
+        "ur": "معلومات جو ہم جمع کرتے ہیں"
+    },
+    "information_we_collect_desc": {
+        "en": "We collect information you provide directly to us.",
+        "ur": "ہم وہ معلومات جمع کرتے ہیں جو آپ براہ راست ہمیں فراہم کرتے ہیں۔"
+    },
+    "invalid_credential_error": {
+        "en": "Invalid login credentials",
+        "ur": "غلط لاگ ان معلومات"
+    },
+    "invalid_email": {
+        "en": "Invalid email address",
+        "ur": "غلط ای میل پتہ"
+    },
+    "invalid_email_error": {
+        "en": "Please enter a valid email address",
+        "ur": "براہ کرم درست ای میل پتہ درج کریں"
+    },
+    "join_as_provider": {
+        "en": "Join as Service Provider",
+        "ur": "بطور سروس فراہم کنندہ شامل ہوں"
+    },
+    "join_theka": {
+        "en": "Join Theka Online",
+        "ur": "تھیکا آن لائن میں شامل ہوں"
+    },
+    "login_failed_error": {
+        "en": "Login failed",
+        "ur": "لاگ ان ناکام رہا"
+    },
+    "login_subtitle": {
+        "en": "Sign in to continue",
+        "ur": "جاری رکھنے کے لیے سائن ان کریں"
+    },
+    "need": {
+        "en": "Need",
+        "ur": "ضرورت"
+    },
+    "new_to_theka": {
+        "en": "New to Theka Online?",
+        "ur": "تھیکا آن لائن پر نئے ہیں؟"
+    },
+    "no_reviews_yet": {
+        "en": "No reviews yet",
+        "ur": "ابھی تک کوئی تبصرہ نہیں ہے"
+    },
+    "no_services_available": {
+        "en": "No services available",
+        "ur": "کوئی سروس دستیاب نہیں ہے"
+    },
+    "not_registered_error": {
+        "en": "This phone number is not registered",
+        "ur": "یہ فون نمبر رجسٹرڈ نہیں ہے"
+    },
+    "otp_sent_to_phone": {
+        "en": "OTP sent to ",
+        "ur": "OTP بھیج دیا گیا ہے "
+    },
+    "password_required": {
+        "en": "Password is required",
+        "ur": "پاس ورڈ درکار ہے"
+    },
+    "phone": {
+        "en": "Phone",
+        "ur": "فون"
+    },
+    "phone_hint_login": {
+        "en": "Phone number",
+        "ur": "فون نمبر"
+    },
+    "phone_tab": {
+        "en": "Phone",
+        "ur": "فون"
+    },
+    "privacy_policy": {
+        "en": "Privacy Policy",
+        "ur": "پرائیویسی پالیسی"
+    },
+    "privacy_policy_content": {
+        "en": "Our privacy policy explains how we handle your data.",
+        "ur": "ہماری پرائیویسی پالیسی بتاتی ہے کہ ہم آپ کے ڈیٹا کو کیسے ہینڈل کرتے ہیں۔"
+    },
+    "profile_picture_updated_successfully": {
+        "en": "Profile picture updated successfully",
+        "ur": "پروفائل تصویر کامیابی سے اپ ڈیٹ ہو گئی"
+    },
+    "provider_desc": {
+        "en": "Provide your services and earn",
+        "ur": "اپنی سروسز فراہم کریں اور کمائیں"
+    },
+    "provider_reg_card": {
+        "en": "Register as Service Provider",
+        "ur": "بطور سروس فراہم کنندہ رجسٹر کریں"
+    },
+    "provider_responsibilities": {
+        "en": "Provider Responsibilities",
+        "ur": "فراہم کنندہ کی ذمہ داریاں"
+    },
+    "provider_responsibilities_desc": {
+        "en": "Providers must deliver quality services fairly.",
+        "ur": "فراہم کنندگان کو معیاری خدمات منصفانہ طریقے سے فراہم کرنی چاہئیں۔"
+    },
+    "rating_from_customer": {
+        "en": "Rating from Customer",
+        "ur": "گاہک کی طرف سے درجہ بندی"
+    },
+    "rating_from_provider": {
+        "en": "Rating from Provider",
+        "ur": "فراہم کنندہ کی طرف سے درجہ بندی"
+    },
+    "rating_label": {
+        "en": "Rating",
+        "ur": "درجہ بندی"
+    },
+    "Refresh": {
+        "en": "Refresh",
+        "ur": "تازہ کریں"
+    },
+    "retry": {
+        "en": "Retry",
+        "ur": "دوبارہ کوشش کریں"
+    },
+    "reviews_for": {
+        "en": "Reviews for",
+        "ur": "کے لیے جائزے"
+    },
+    "select_city_label": {
+        "en": "Select City",
+        "ur": "شہر منتخب کریں"
+    },
+    "send_reset_link": {
+        "en": "Send Reset Link",
+        "ur": "ری سیٹ لنک بھیجیں"
+    },
+    "sign_up_as_customer": {
+        "en": "Sign up as Customer",
+        "ur": "بطور گاہک سائن اپ کریں"
+    },
+    "terms_and_conditions_content": {
+        "en": "Read our full terms and conditions.",
+        "ur": "ہماری مکمل شرائط و ضوابط پڑھیں۔"
+    },
+    "too_many_requests_error": {
+        "en": "Too many requests. Try again later.",
+        "ur": "بہت زیادہ درخواستیں، براہ کرم بعد میں کوشش کریں۔"
+    },
+    "unknown_user": {
+        "en": "Unknown User",
+        "ur": "نامعلوم صارف"
+    },
+    "use_of_service": {
+        "en": "Use of Service",
+        "ur": "سروس کا استعمال"
+    },
+    "use_of_service_desc": {
+        "en": "Users must use the platform for lawful purposes only.",
+        "ur": "صارفین کو پلیٹ فارم صرف قانونی مقاصد کے لیے استعمال کرنا چاہیے۔"
+    },
+    "user_accounts": {
+        "en": "User Accounts",
+        "ur": "صارف کے اکاؤنٹس"
+    },
+    "user_accounts_desc": {
+        "en": "You are responsible for maintaining your account security.",
+        "ur": "آپ اپنے اکاؤنٹ کی سیکیورٹی برقرار رکھنے کے ذمہ دار ہیں۔"
+    },
+    "user_default": {
+        "en": "User",
+        "ur": "صارف"
+    },
+    "user_disabled_error": {
+        "en": "Account has been disabled",
+        "ur": "اکاؤنٹ معطل کر دیا گیا ہے"
+    },
+    "user_not_found_error": {
+        "en": "User not found",
+        "ur": "صارف نہیں ملا"
+    },
+    "verified": {
+        "en": "Verified",
+        "ur": "تصدیق شدہ"
+    },
+    "verify_and_continue": {
+        "en": "Verify and Continue",
+        "ur": "تصدیق کریں اور جاری رکھیں"
+    },
+    "verify_and_login": {
+        "en": "Verify and Login",
+        "ur": "تصدیق کریں اور لاگ ان کریں"
+    },
+    "verify_and_register": {
+        "en": "Verify and Register",
+        "ur": "تصدیق کریں اور رجسٹر کریں"
+    },
+    "welcome_back": {
+        "en": "Welcome Back",
+        "ur": "خوش آمدید"
+    },
+    "whatsapp_not_available": {
+        "en": "WhatsApp is not installed",
+        "ur": "واٹس ایپ انسٹال نہیں ہے"
+    },
+    "wrong_password_error": {
+        "en": "Incorrect password",
+        "ur": "غلط پاس ورڈ"
+    },
+    "your_email": {
+        "en": "Your Email",
+        "ur": "آپ کی ای میل"
+    },
+    "your_rating_submitted": {
+        "en": "Your rating has been submitted",
+        "ur": "آپ کی درجہ بندی جمع کر دی گئی ہے"
+    },
+    "your_rights": {
+        "en": "Your Rights",
+        "ur": "آپ کے حقوق"
+    },
+    "your_rights_desc": {
+        "en": "You have the right to access and update your data.",
+        "ur": "آپ کو اپنے ڈیٹا تک رسائی اور اسے اپ ڈیٹ کرنے کا حق ہے۔"
+    },
+    "enter_6_digit_otp": {
+        "en": "Enter 6-digit OTP",
+        "ur": "6 ہندسوں والا او ٹی پی درج کریں"
+    },
+    "invalid_phone": {
+        "en": "Invalid phone number",
+        "ur": "غلط فون نمبر"
+    },
+    "otp_sent_to": {
+        "en": "OTP sent to",
+        "ur": "او ٹی پی بھیج دیا گیا"
+    }
+}

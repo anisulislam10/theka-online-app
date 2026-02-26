@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "742838170163",
+    "project_id": "fixnow-8f2bb",
+    "storage_bucket": "fixnow-8f2bb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742838170163:android:f43281ae676aed29ce2946",
+        "android_client_info": {
+          "package_name": "com.shaplogicians.theka_online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742838170163-c68e96m06ifngggj1oe6gvrrv4l5dstn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shaplogicians.theka_online",
+            "certificate_hash": "185bf340ab0744e732fcea34b8501084db0da5c0"
+          }
+        },
+        {
+          "client_id": "742838170163-pb1tbm6gh1rss45o6ovhf1qcgu5cmn9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shaplogicians.theka_online",
+            "certificate_hash": "82da1d052dffa77a32ef26fa4a4a41437dc0d602"
+          }
+        },
+        {
+          "client_id": "742838170163-1sm6u37f5fcldl79fh1mha5r6sbh58qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDV1PWbwmAqjbfjJrLooqsvuyH_bKSffLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742838170163-1sm6u37f5fcldl79fh1mha5r6sbh58qp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
