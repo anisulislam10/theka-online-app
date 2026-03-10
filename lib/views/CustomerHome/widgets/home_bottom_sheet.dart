@@ -15,6 +15,8 @@ import 'package:quickserve/views/CustomerHome/controllers/maps_controller.dart';
 import 'package:quickserve/controllers/ad_controller.dart';
 import 'package:quickserve/core/widgets/ad_widget.dart';
 import 'package:quickserve/core/utils/category_seeder.dart'; // Import Seeder
+import 'dart:async';
+import 'package:dots_indicator/dots_indicator.dart';
 
 class HomeBottomSheet extends StatefulWidget {
   const HomeBottomSheet({super.key});
@@ -36,6 +38,11 @@ class _HomeBottomSheetState extends State<HomeBottomSheet> {
   bool _isLoadingLocation = false;
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
+
+  // Ad Slider state
+  final PageController _adPageController = PageController();
+  final RxInt _currentAdIndex = 0.obs;
+  Timer? _adTimer;
 
   @override
   void initState() {
@@ -59,6 +66,29 @@ class _HomeBottomSheetState extends State<HomeBottomSheet> {
       (value) => _descriptionController.text = value,
     );
     ever(homeController.price, (value) => _priceController.text = value);
+
+    _startAdTimer();
+  }
+
+  void _startAdTimer() {
+    _adTimer?.cancel();
+    _adTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      final adController = Get.find<AdController>();
+      final ads = adController.ads.where(
+        (a) => a.position == 'mobile' || a.position == 'customer',
+      ).toList();
+      
+      if (ads.length > 1) {
+        int nextIndex = (_currentAdIndex.value + 1) % ads.length;
+        if (_adPageController.hasClients) {
+          _adPageController.animateToPage(
+            nextIndex,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
   }
 
   // Temporary function to restore DB
@@ -80,6 +110,8 @@ class _HomeBottomSheetState extends State<HomeBottomSheet> {
     _locationController.dispose();
     _descriptionController.dispose();
     _priceController.dispose();
+    _adPageController.dispose();
+    _adTimer?.cancel();
     super.dispose();
   }
 
@@ -807,21 +839,54 @@ class _HomeBottomSheetState extends State<HomeBottomSheet> {
 
                     SizedBox(height: 15.h),
                     
-                    // Ads Section
+                    // Ads Slider Section
                     Obx(() {
                       final adController = Get.isRegistered<AdController>() 
                           ? Get.find<AdController>() 
                           : Get.put(AdController());
                       
-                      if (adController.ads.isEmpty) return const SizedBox.shrink();
-                      
-                      // Show the first ad assigned to mobile or customer
-                      final ad = adController.ads.firstWhere(
+                      final ads = adController.ads.where(
                         (a) => a.position == 'mobile' || a.position == 'customer',
-                        orElse: () => adController.ads.first,
-                      );
+                      ).toList();
+
+                      if (ads.isEmpty) return const SizedBox.shrink();
                       
-                      return AdWidget(ad: ad);
+                      if (ads.length == 1) {
+                        return AdWidget(ad: ads.first);
+                      }
+
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 115.h, // Increased slightly for safety
+                            child: PageView.builder(
+                              controller: _adPageController,
+                              onPageChanged: (index) => _currentAdIndex.value = index,
+                              itemCount: ads.length,
+                              itemBuilder: (context, index) {
+                                return AdWidget(
+                                  ad: ads[index],
+                                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Obx(() => DotsIndicator(
+                            dotsCount: ads.length,
+                            position: _currentAdIndex.value.toDouble(),
+                            decorator: DotsDecorator(
+                              size: Size.square(6.0.r),
+                              activeSize: Size(12.0.r, 6.0.r),
+                              activeColor: AppColors.primary,
+                              color: AppColors.grey.withOpacity(0.3),
+                              activeShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0.r),
+                              ),
+                            ),
+                          )),
+                        ],
+                      );
                     }),
 
                     SizedBox(height: 15.h),

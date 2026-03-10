@@ -136,7 +136,7 @@ class ServiceProviderRegisterPage extends StatelessWidget {
                               children: [
                               // Profile Image Picker
                               GestureDetector(
-                                onTap: () => controller.pickImage(),
+                                onTap: () => controller.pickImage(context),
                                 child: Obx(() => Stack(
                                   children: [
                                     Container(
@@ -343,87 +343,61 @@ class ServiceProviderRegisterPage extends StatelessWidget {
                               SizedBox(height: 20.h),
 
                               // OTP Section
-                              Obx(() {
-                                if (controller.showOtpSection.value) {
-                                  return Column(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(12.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue.withOpacity(0.05),
-                                          borderRadius: BorderRadius.circular(10.r),
-                                          border: Border.all(color: Colors.blue.withOpacity(0.1)),
+                              Obx(() => controller.showOtpSection.value
+                                  ? Column(
+                                      children: [
+                                        CustomTextField(
+                                          controller: controller.otpController,
+                                          hintText: "Enter 6-digit OTP",
+                                          prefixIcon: Icons.security_rounded,
+                                          keyboardType: TextInputType.number,
+                                          maxLength: 6,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return "Enter the OTP";
+                                            }
+                                            if (value.trim().length != 6) {
+                                              return "OTP must be 6 digits";
+                                            }
+                                            return null;
+                                          },
                                         ),
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.mark_email_unread_outlined, color: Colors.blue, size: 20.sp),
-                                            SizedBox(width: 10.w),
-                                            Expanded(
-                                              child: SmartText(
-                                                title: "${"otp_sent_to".tr} ${controller.phoneController.text}",
-                                                size: 13.sp,
-                                                color: Colors.blue[800],
-                                              ),
+                                        SizedBox(height: 10.h),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: TextButton(
+                                            onPressed: controller.isLoading.value
+                                                ? null
+                                                : () => controller.sendOtp(context),
+                                            child: Text(
+                                              "Resend OTP",
+                                              style: TextStyle(
+                                                  color: AppColors.primary,
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 15.h),
-                                      CustomTextField(
-                                        controller: controller.otpController,
-                                        hintText: "enter_6_digit_otp".tr,
-                                        prefixIcon: Icons.password_rounded,
-                                        keyboardType: TextInputType.number,
-                                        validator: (value) {
-                                          if (value == null || value.trim().isEmpty) {
-                                            return "enter_otp".tr;
-                                          }
-                                          if (value.trim().length != 6) {
-                                            return "enter_otp".tr;
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton(
-                                          onPressed: () => controller.resendOtp(context),
-                                          style: TextButton.styleFrom(
-                                            padding: EdgeInsets.symmetric(horizontal: 10.w),
-                                            minimumSize: Size.zero,
-                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          ),
-                                          child: SmartText(
-                                            title: "resend_otp".tr,
-                                            color: AppColors.primary,
-                                            fontWeight: FontWeight.w600,
-                                            size: 13.sp,
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(height: 10.h),
-                                    ],
-                                  );
-                                }
-                                return const SizedBox.shrink();
-                              }),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink()),
+                              SizedBox(height: 10.h),
 
-                              // Register/Send OTP Button
+                              // Continue Button
                               Obx(
-                                    () => CustomButton(
+                                () => CustomButton(
                                   text: controller.isLoading.value
                                       ? "processing".tr
-                                      : controller.showOtpSection.value
-                                      ? "verify_and_continue".tr
-                                      : "send_otp".tr,
+                                      : (controller.showOtpSection.value
+                                          ? "verify_otp_continue".tr
+                                          : "continue".tr),
                                   onPressed: () {
-                                    if (!controller.isLoading.value) {
-                                      if (controller.showOtpSection.value) {
-                                        controller.verifyOtpAndContinue(context);
-                                      } else {
-                                        controller.sendOtp(context);
-                                      }
+                                    if (controller.isLoading.value) return;
+
+                                    if (controller.showOtpSection.value) {
+                                      controller.verifyOtpAndContinue(context);
+                                    } else {
+                                      controller.sendOtp(context);
                                     }
                                   },
                                 ),

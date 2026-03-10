@@ -9,6 +9,9 @@ import 'package:quickserve/views/BottomNavbar/bottom_navbar.dart';
 import 'package:quickserve/views/CustomerHome/widgets/home_page.dart';
 import 'package:quickserve/views/Auth/AuthService/auth_service.dart';
 
+import 'package:package_info_plus/package_info_plus.dart';
+import 'force_update_page.dart';
+
 import '../Auth/Login/login_page.dart';
 
 class SplashController extends GetxController {
@@ -24,6 +27,13 @@ class SplashController extends GetxController {
   /// Handles navigation after splash delay
   Future<void> _handleSplashNavigation() async {
     await Future.delayed(const Duration(seconds: 2));
+
+    // 1. Check for force update first
+    bool needsUpdate = await _checkVersion();
+    if (needsUpdate) {
+      Get.offAll(() => const ForceUpdatePage());
+      return;
+    }
 
     final user = _auth.currentUser;
 
@@ -104,5 +114,54 @@ class SplashController extends GetxController {
     } else {
       Get.offAll(() => const AccountVerificationScreen());
     }
+  }
+
+  /// Checks if the app version is below the minimum required version
+  Future<bool> _checkVersion() async {
+    try {
+      debugPrint("🔍 Checking for app updates...");
+      
+      // Get current app version
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version; // e.g. "1.2.1"
+      debugPrint("📱 Current App Version: $currentVersion");
+
+      // Get minimum required version from Firestore
+      // Path: version_control/settings -> { min_version: "1.2.1" }
+      DocumentSnapshot settings = await _firestore
+          .collection('version_control')
+          .doc('settings')
+          .get();
+
+      if (settings.exists) {
+        String minVersion = settings.get('min_version') ?? "1.0.0";
+        debugPrint("📡 Minimum Required Version: $minVersion");
+
+        // Helper to compare versions (e.g. "1.2.1" vs "1.2.0")
+        return _isVersionLower(currentVersion, minVersion);
+      }
+    } catch (e) {
+      debugPrint("⚠️ Version check failed: $e. Skipping update check.");
+    }
+    return false;
+  }
+
+  /// Returns true if [current] is lower than [min]
+  bool _isVersionLower(String current, String min) {
+    try {
+      List<int> currentParts = current.split('.').map(int.parse).toList();
+      List<int> minParts = min.split('.').map(int.parse).toList();
+
+      for (int i = 0; i < minParts.length; i++) {
+        int currentPart = i < currentParts.length ? currentParts[i] : 0;
+        int minPart = minParts[i];
+
+        if (currentPart < minPart) return true;
+        if (currentPart > minPart) return false;
+      }
+    } catch (e) {
+      debugPrint("❌ Version parsing error: $e");
+    }
+    return false;
   }
 }

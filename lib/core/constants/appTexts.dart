@@ -94,6 +94,7 @@ class SmartText extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
   final double? height;
+  final double? letterSpacing;
 
   const SmartText({
     super.key,
@@ -105,6 +106,7 @@ class SmartText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.height,
+    this.letterSpacing,
   });
 
   bool get isUrdu => Get.locale?.languageCode == 'ur';
@@ -123,12 +125,14 @@ class SmartText extends StatelessWidget {
               color: color ?? Colors.black,
               fontWeight: fontWeight ?? FontWeight.w400,
               height: height,
+              letterSpacing: letterSpacing,
             )
           : GoogleFonts.inter(
               fontSize: (size ?? 16).sp,
               color: color ?? Colors.black,
               fontWeight: fontWeight ?? FontWeight.w400,
               height: height,
+              letterSpacing: letterSpacing,
             ),
     );
   }

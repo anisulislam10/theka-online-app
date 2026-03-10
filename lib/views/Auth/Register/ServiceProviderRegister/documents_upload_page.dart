@@ -434,7 +434,7 @@ class DocumentsUploadPage extends StatelessWidget {
                   title: "government_id_front".tr,
                   file: controller.cnicFront,
                   onTap: () =>
-                      controller.pickDocumentWithOptions(controller.cnicFront),
+                      controller.pickDocumentWithOptions(context, controller.cnicFront),
                 ),
 
                 SizedBox(height: 12.h),
@@ -444,7 +444,7 @@ class DocumentsUploadPage extends StatelessWidget {
                   title: "government_id_back".tr,
                   file: controller.cnicBack,
                   onTap: () =>
-                      controller.pickDocumentWithOptions(controller.cnicBack),
+                      controller.pickDocumentWithOptions(context, controller.cnicBack),
                 ),
 
                 SizedBox(height: 30.h),

@@ -8,6 +8,8 @@ import 'order_details_bottom_sheet.dart';
 import 'package:quickserve/controllers/ad_controller.dart';
 import 'package:quickserve/core/widgets/ad_widget.dart';
 import 'package:quickserve/core/widgets/language_selector.dart';
+import 'dart:async';
+import 'package:dots_indicator/dots_indicator.dart';
 
 
 class OrdersList extends StatelessWidget {
@@ -437,19 +439,105 @@ class OrdersList extends StatelessWidget {
   }
 
   Widget _buildAdWidget() {
+    return _AdSliderWidget();
+  }
+}
+
+class _AdSliderWidget extends StatefulWidget {
+  @override
+  State<_AdSliderWidget> createState() => _AdSliderWidgetState();
+}
+
+class _AdSliderWidgetState extends State<_AdSliderWidget> {
+  final PageController _pageController = PageController();
+  final RxInt _currentIndex = 0.obs;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      final adController = Get.find<AdController>();
+      final ads = adController.ads.where(
+        (a) => a.position == 'mobile' || a.position == 'provider',
+      ).toList();
+
+      if (ads.length > 1) {
+        int nextIndex = (_currentIndex.value + 1) % ads.length;
+        if (_pageController.hasClients) {
+          _pageController.animateToPage(
+            nextIndex,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Obx(() {
       final adController = Get.isRegistered<AdController>()
           ? Get.find<AdController>()
           : Get.put(AdController());
 
-      if (adController.ads.isEmpty) return const SizedBox.shrink();
-
-      final ad = adController.ads.firstWhere(
+      final ads = adController.ads.where(
         (a) => a.position == 'mobile' || a.position == 'provider',
-        orElse: () => adController.ads.first,
-      );
+      ).toList();
 
-      return AdWidget(ad: ad, isSmall: true);
+      if (ads.isEmpty) return const SizedBox.shrink();
+
+      if (ads.length == 1) {
+        return AdWidget(ad: ads.first, isSmall: true);
+      }
+
+      return Column(
+        children: [
+          SizedBox(
+            height: 90.h, // Increased slightly for safety
+            child: PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) => _currentIndex.value = index,
+              itemCount: ads.length,
+              itemBuilder: (context, index) {
+                return AdWidget(
+                  ad: ads[index], 
+                  isSmall: true,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Obx(() => DotsIndicator(
+            dotsCount: ads.length,
+            position: _currentIndex.value.toDouble(),
+            decorator: DotsDecorator(
+              size: Size.square(5.0.r),
+              activeSize: Size(10.0.r, 5.0.r),
+              activeColor: AppColors.primary,
+              color: AppColors.grey.withOpacity(0.3),
+              activeShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0.r),
+              ),
+            ),
+          )),
+          SizedBox(height: 8.h),
+        ],
+      );
     });
   }
 }

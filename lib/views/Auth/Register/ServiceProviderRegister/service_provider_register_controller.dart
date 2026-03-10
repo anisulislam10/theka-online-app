@@ -14,8 +14,10 @@ import 'documents_upload_page.dart';
 import 'package:quickserve/views/Auth/AuthService/auth_service.dart';
 import 'package:quickserve/views/BottomNavbar/bottom_navbar.dart';
 import 'package:quickserve/core/constants/appColors.dart';
+import 'package:quickserve/core/services/vt_otp_service.dart';
 
 class ServiceProviderRegisterController extends GetxController {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final currentUserId = ''.obs;
   final currentUserEmail = ''.obs;
   final currentUserName = ''.obs;
@@ -624,7 +626,7 @@ class ServiceProviderRegisterController extends GetxController {
     }
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(BuildContext context) async {
     Get.bottomSheet(
       SafeArea(
         child: Container(
@@ -639,7 +641,9 @@ class ServiceProviderRegisterController extends GetxController {
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Take a Photo'),
                 onTap: () async {
-                  Get.back();
+                  Navigator.pop(context);
+                  // Small delay to ensure bottom sheet closes before picker opens
+                  await Future.delayed(const Duration(milliseconds: 300));
                   await _pickImage(ImageSource.camera);
                 },
               ),
@@ -647,14 +651,16 @@ class ServiceProviderRegisterController extends GetxController {
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Choose from Gallery'),
                 onTap: () async {
-                  Get.back();
+                  Navigator.pop(context);
+                  // Small delay to ensure bottom sheet closes before picker opens
+                  await Future.delayed(const Duration(milliseconds: 300));
                   await _pickImage(ImageSource.gallery);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.close),
                 title: const Text('Cancel'),
-                onTap: () => Get.back(),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),
@@ -694,7 +700,7 @@ class ServiceProviderRegisterController extends GetxController {
   }
 
 
-  Future<void> pickDocumentWithOptions(Rx<XFile?> targetFile) async {
+  Future<void> pickDocumentWithOptions(BuildContext context, Rx<XFile?> targetFile) async {
     Get.bottomSheet(
       SafeArea(
         child: Container(
@@ -709,9 +715,7 @@ class ServiceProviderRegisterController extends GetxController {
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Take a Photo'),
                 onTap: () async {
-                  if (Get.isBottomSheetOpen == true) {
-                    Get.back();
-                  }
+                  Navigator.pop(context);
                   // Small delay to ensure bottom sheet closes before picker opens
                   await Future.delayed(const Duration(milliseconds: 300));
                   final file = await _pickImageToFile(ImageSource.camera);
@@ -722,11 +726,7 @@ class ServiceProviderRegisterController extends GetxController {
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Choose from Gallery'),
                 onTap: () async {
-                  // Explicitly check and close bottom sheet
-                  if (Get.isBottomSheetOpen == true) {
-                    Get.back();
-                  }
-                  
+                  Navigator.pop(context);
                   // Small delay to ensure bottom sheet closes before picker opens
                   await Future.delayed(const Duration(milliseconds: 300));
                   final file = await _pickImageToFile(ImageSource.gallery);
@@ -736,7 +736,7 @@ class ServiceProviderRegisterController extends GetxController {
               ListTile(
                 leading: const Icon(Icons.close),
                 title: const Text('Cancel'),
-                onTap: () => Get.back(),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),
@@ -954,12 +954,9 @@ class ServiceProviderRegisterController extends GetxController {
         ),
       );
 
-      Get.snackbar(
+      _showSnackbar(
         'Success',
         'Your application has been submitted for review',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green.withOpacity(0.8),
-        colorText: Colors.white,
       );
 
       await Future.delayed(const Duration(milliseconds: 300));
@@ -973,14 +970,12 @@ class ServiceProviderRegisterController extends GetxController {
     }
   }
 
-  Future<void> sendOtp(BuildContext context) async {
+  // Continue to documents upload without OTP (using dummy email)
+  Future<void> continueToDocumentsWithoutOtp(BuildContext context) async {
+    print("==================== CONTINUE WITHOUT OTP STARTED ====================");
+
     if (formKey.currentState == null || !formKey.currentState!.validate()) {
       _showErrorDialog(context, "Please fill all required fields correctly");
-      return;
-    }
-
-    if (phoneController.text.trim().isEmpty) {
-      _showErrorDialog(context, "Please enter phone number");
       return;
     }
 
@@ -989,120 +984,94 @@ class ServiceProviderRegisterController extends GetxController {
       return;
     }
 
+    String rawPhone = phoneController.text.trim();
+    String formattedPhone = "+92$rawPhone";
+    String dummyEmail = "user_$rawPhone@thekaonline.pk";
+    String dummyPassword = "pw_${rawPhone}_stable";
+
     try {
       isLoading.value = true;
-      String formattedPhone = "+92" + phoneController.text.trim();
-
-      // SAVE DATA BEFORE ASYNC OPERATION
-      savedName.value = nameController.text.trim();
-      savedEmail.value = emailController.text.trim();
-      savedPhone.value = formattedPhone;
-      savedPassword.value = passwordController.text.trim();
-      print("💾 Saved input data: Name=${savedName.value}, Phone=${savedPhone.value}");
-
-      // Check if already registered
-      final query = await FirebaseFirestore.instance
+      print("🔍 Checking if phone number already registered...");
+      final phoneQuery = await FirebaseFirestore.instance
           .collection("ServiceProviders")
           .where("phone", isEqualTo: formattedPhone)
           .get();
 
-      if (query.docs.isNotEmpty) {
-        _showErrorDialog(context, "Phone number already registered as Service Provider");
+      if (phoneQuery.docs.isNotEmpty) {
         isLoading.value = false;
+        _showErrorDialog(context, "Phone number already registered. Please login.");
         return;
       }
 
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: formattedPhone,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          debugPrint("✅ SP Auto verification completed");
-          try {
-            await FirebaseAuth.instance.signInWithCredential(credential);
-            isLoading.value = false;
-            // Only navigate if we're not already there (prevents double push)
-            if (Get.currentRoute != '/DocumentsUploadPage') {
-              Get.to(() => const DocumentsUploadPage(), arguments: {
-                'name': savedName.value,
-                'email': savedEmail.value,
-                'phone': savedPhone.value,
-                'password': savedPassword.value,
-                'city': selectedCity.value,
-              });
-            }
-          } catch (e) {
-            debugPrint("❌ SP Auto verification error: $e");
-            isLoading.value = false;
-          }
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          debugPrint("❌ SP Verification Failed: ${e.code}");
-          isLoading.value = false;
-          _showErrorDialog(context, e.message ?? "Verification failed");
-        },
-        codeSent: (String vid, int? resendTokenReceived) {
-          debugPrint("✅ SP OTP sent successfully");
-          verificationId.value = vid;
-          resendToken.value = resendTokenReceived ?? 0;
-          showOtpSection.value = true;
-          isLoading.value = false;
-          Get.snackbar(
-            "Success",
-            "OTP sent successfully",
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-            snackPosition: SnackPosition.BOTTOM
+      print("🔐 Creating Firebase account with dummy email: $dummyEmail");
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: dummyEmail,
+        password: dummyPassword,
+      );
+
+      final user = userCredential.user;
+      if (user == null) throw Exception("Registration failed");
+
+      print("✅ Firebase account created. UID: ${user.uid}");
+
+      // Save data for next screen
+      savedName.value = nameController.text.trim();
+      savedEmail.value = dummyEmail; // Use dummy email as primary
+      savedPhone.value = formattedPhone;
+      savedPassword.value = dummyPassword;
+
+      print("🚀 Navigating to DocumentsUploadPage...");
+      Get.to(() => const DocumentsUploadPage(), arguments: {
+        'name': savedName.value,
+        'email': savedEmail.value,
+        'phone': savedPhone.value,
+        'password': savedPassword.value,
+        'city': selectedCity.value,
+      });
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        print("ℹ️ Email already in use. Signing in with dummy credentials...");
+        try {
+          UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: dummyEmail,
+            password: dummyPassword,
           );
-        },
-        codeAutoRetrievalTimeout: (String vid) {
-          verificationId.value = vid;
-        },
-      );
-    } catch (e) {
-      isLoading.value = false;
-      _showErrorDialog(context, e.toString());
-    }
-  }
+          final user = userCredential.user;
+          if (user == null) throw Exception("Login failed");
+          
+          print("✅ Firebase account signed in. UID: ${user.uid}");
+          
+          // Save data for next screen
+          savedName.value = nameController.text.trim();
+          savedEmail.value = dummyEmail; 
+          savedPhone.value = formattedPhone;
+          savedPassword.value = dummyPassword;
 
-  Future<void> resendOtp(BuildContext context) async {
-    await sendOtp(context);
-  }
-
-  Future<void> verifyOtpAndContinue(BuildContext context) async {
-    if (otpController.text.trim().isEmpty) {
-      _showErrorDialog(context, "Please enter OTP");
-      return;
-    }
-
-    try {
-      debugPrint("📲 SP Manual OTP Verification started");
-      isLoading.value = true;
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId.value,
-        smsCode: otpController.text.trim(),
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      debugPrint("✅ SP Manual Verification successful");
-      isLoading.value = false;
-
-      // Prevent double navigation if auto-verification already handled it
-      if (Get.currentRoute != '/DocumentsUploadPage') {
-        Get.to(() => const DocumentsUploadPage(), arguments: {
-          'name': savedName.value,
-          'email': savedEmail.value,
-          'phone': savedPhone.value,
-          'password': savedPassword.value,
-          'city': selectedCity.value,
-        });
+          print("🚀 Navigating to DocumentsUploadPage...");
+          Get.to(() => const DocumentsUploadPage(), arguments: {
+            'name': savedName.value,
+            'email': savedEmail.value,
+            'phone': savedPhone.value,
+            'password': savedPassword.value,
+            'city': selectedCity.value,
+          });
+        } catch (signInError) {
+          _showErrorDialog(context, "Auth Error: ${signInError.toString()}");
+        }
+      } else {
+        _showErrorDialog(context, "Auth Error: ${e.message}");
       }
     } catch (e) {
-      debugPrint("❌ SP Manual Verification failed: $e");
+      _showErrorDialog(context, "Error: ${e.toString()}");
+    } finally {
       isLoading.value = false;
-      _showErrorDialog(context, "Invalid OTP: ${e.toString()}");
     }
+    print("==================== CONTINUE WITHOUT OTP ENDED ====================\n");
   }
 
   void _showErrorDialog(BuildContext context, String message) {
+    if (!context.mounted) return;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -1116,5 +1085,195 @@ class ServiceProviderRegisterController extends GetxController {
         ],
       ),
     );
+  }
+
+  // ==================== SERVICE PROVIDER REGISTRATION WITH OTP ====================
+  Future<void> sendOtp(BuildContext context) async {
+    debugPrint("==================== SEND OTP FOR SERVICE PROVIDER STARTED ====================");
+
+    if (formKey.currentState == null || !formKey.currentState!.validate()) {
+      _showErrorDialog(context, "Please fill all required fields correctly");
+      return;
+    }
+
+    if (selectedImageFile.value == null) {
+      _showErrorDialog(context, "Please select a profile picture first");
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      String rawPhone = phoneController.text.trim();
+      String formattedPhone = "+92$rawPhone";
+      debugPrint("📱 Formatted phone number: $formattedPhone");
+
+      // Verify if number already exists
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('ServiceProviders')
+          .where('phone', isEqualTo: formattedPhone)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        isLoading.value = false;
+        _showErrorDialog(context, "This phone number is already registered as a Service Provider. Please login.");
+        return;
+      }
+
+      // Check Customers collection too
+      final customerQuery = await FirebaseFirestore.instance
+          .collection('Customers')
+          .where('phone', isEqualTo: formattedPhone)
+          .get();
+
+      if (customerQuery.docs.isNotEmpty) {
+        isLoading.value = false;
+        _showErrorDialog(context, "This phone number is already registered as a Customer.");
+        return;
+      }
+
+      // SAVE FORM DATA LOCALLY BEFORE ASYNC GAP
+      savedName.value = nameController.text.trim();
+      savedEmail.value = emailController.text.trim();
+      savedPhone.value = formattedPhone;
+      savedPassword.value = passwordController.text.trim();
+      debugPrint("💾 Temporary provider data saved locally");
+
+      debugPrint("📤 Sending OTP to $formattedPhone via VeevoTech...");
+      final result = await VtOtpService.instance.sendOtp(formattedPhone);
+
+      if (result.isSuccess) {
+        showOtpSection.value = true;
+        _showSnackbar("Success", "OTP sent to $formattedPhone");
+        debugPrint("✅ OTP sent successfully");
+      } else {
+        _showErrorDialog(context, result.errorMessage ?? "Failed to send OTP");
+      }
+    } catch (e) {
+      debugPrint("❌ Error in SP sendOtp: ${e.toString()}");
+      _showErrorDialog(context, "Failed to send OTP. Please try again.");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> resendOtp(BuildContext context) async {
+    await sendOtp(context);
+  }
+
+  Future<void> verifyOtpAndContinue(BuildContext context) async {
+    if (otpController.text.trim().isEmpty) {
+      _showErrorDialog(context, "Please enter the OTP");
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      final otp = otpController.text.trim();
+
+      debugPrint("📲 SP OTP Verification started for ${savedPhone.value}");
+      final verifyResult = VtOtpService.instance.verifyOtp(savedPhone.value, otp);
+
+      switch (verifyResult) {
+        case VtOtpVerifyResult.valid:
+          debugPrint("✅ OTP verified. Proceeding with account creation...");
+          await _createDummyAccountAndContinue(context);
+          break;
+        case VtOtpVerifyResult.invalid:
+          _showErrorDialog(context, "Invalid OTP code. Please check and try again.");
+          break;
+        case VtOtpVerifyResult.expired:
+          showOtpSection.value = false;
+          otpController.clear();
+          _showErrorDialog(context, "OTP has expired. Please request a new one.");
+          break;
+        case VtOtpVerifyResult.notFound:
+          _showErrorDialog(context, "No OTP found. Please tap 'Send OTP' first.");
+          break;
+      }
+    } catch (e) {
+      debugPrint("❌ SP OTP Verification failed: $e");
+      _showErrorDialog(context, "An error occurred: ${e.toString()}");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _createDummyAccountAndContinue(BuildContext context) async {
+    String rawPhone = phoneController.text.trim();
+    String formattedPhone = "+92$rawPhone";
+    String dummyEmail = "user_$rawPhone@thekaonline.pk";
+    String dummyPassword = "pw_${rawPhone}_stable";
+
+    try {
+      print("🔐 Creating Firebase account with dummy email: $dummyEmail");
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: dummyEmail,
+        password: dummyPassword,
+      );
+
+      final user = userCredential.user;
+      if (user == null) throw Exception("Registration failed");
+
+      print("✅ Firebase account created. UID: ${user.uid}");
+
+      savedEmail.value = dummyEmail; 
+      savedPassword.value = dummyPassword;
+
+      print("🚀 Navigating to DocumentsUploadPage...");
+      Get.to(() => const DocumentsUploadPage(), arguments: {
+        'name': savedName.value,
+        'email': savedEmail.value,
+        'phone': savedPhone.value,
+        'password': savedPassword.value,
+        'city': selectedCity.value,
+      });
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        print("ℹ️ Email already in use. Signing in with dummy credentials...");
+        try {
+          UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: dummyEmail,
+            password: dummyPassword,
+          );
+          final user = userCredential.user;
+          if (user == null) throw Exception("Login failed");
+          
+          print("✅ Firebase account signed in. UID: ${user.uid}");
+          
+          savedEmail.value = dummyEmail; 
+          savedPassword.value = dummyPassword;
+
+          print("🚀 Navigating to DocumentsUploadPage...");
+          Get.to(() => const DocumentsUploadPage(), arguments: {
+            'name': savedName.value,
+            'email': savedEmail.value,
+            'phone': savedPhone.value,
+            'password': savedPassword.value,
+            'city': selectedCity.value,
+          });
+        } catch (signInError) {
+          _showErrorDialog(context, "Auth Error: ${signInError.toString()}");
+        }
+      } else {
+        _showErrorDialog(context, "Auth Error: ${e.message}");
+      }
+    } catch (e) {
+      _showErrorDialog(context, "Error: ${e.toString()}");
+    }
+  }
+  // Safe snackbar helper to prevent Overlay errors
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Future.microtask(() {
+      Get.snackbar(
+        title,
+        message,
+        backgroundColor: isError ? AppColors.red : AppColors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
+    });
   }
 }

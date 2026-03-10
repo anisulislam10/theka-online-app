@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quickserve/core/constants/appColors.dart';
 import 'package:quickserve/core/constants/appTexts.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:quickserve/views/Profile/ServiceProviderProfile/edit_profile_page.dart';
 import 'package:quickserve/views/Profile/ServiceProviderProfile/provider_profile_controller.dart';
 import 'package:quickserve/views/Splash/welcome_screen.dart';
@@ -14,6 +16,7 @@ import '../../Auth/Login/login_page.dart';
 import '../../Auth/login_type_page.dart';
 import '../../Legal/privacy_policy_page.dart';
 import '../../Legal/terms_and_conditions_page.dart';
+import '../../Legal/about_page.dart';
 
 class ProviderProfilePage extends StatelessWidget {
   const ProviderProfilePage({super.key});
@@ -151,6 +154,17 @@ class ProviderProfilePage extends StatelessWidget {
                       SizedBox(height: 25.h),
 
                       _buildTile(
+                        title: 'about'.tr,
+                        icon: Icons.info_outline,
+                        containerColor: Colors.blue.shade50,
+                        iconColor: Colors.blue,
+                        textColor: Colors.blue.shade800,
+                        onTap: () => Get.to(() => const AboutPage()),
+                      ),
+
+                      SizedBox(height: 15.h),
+
+                      _buildTile(
                         title: 'privacy_policy'.tr,
                         icon: Icons.privacy_tip_outlined,
                         containerColor: Colors.blue.shade50,
@@ -168,6 +182,39 @@ class ProviderProfilePage extends StatelessWidget {
                         iconColor: Colors.blue,
                         textColor: Colors.blue.shade800,
                         onTap: () => Get.to(() => const TermsAndConditionsPage()),
+                      ),
+
+                      SizedBox(height: 15.h),
+
+                      _buildTile(
+                        title: 'share_app'.tr,
+                        icon: Icons.share_outlined,
+                        containerColor: Colors.blue.shade50,
+                        iconColor: Colors.blue,
+                        textColor: Colors.blue.shade800,
+                        onTap: () {
+                          Share.share(
+                            'Check out Theeka Online on Play Store: https://play.google.com/store/apps/details?id=com.shaplogicians.theka_online&hl=en',
+                          );
+                        },
+                      ),
+
+                      SizedBox(height: 15.h),
+
+                      _buildTile(
+                        title: 'rate_on_playstore'.tr,
+                        icon: Icons.star_rate_outlined,
+                        containerColor: Colors.blue.shade50,
+                        iconColor: Colors.blue,
+                        textColor: Colors.blue.shade800,
+                        onTap: () async {
+                          final Uri url = Uri.parse(
+                            'https://play.google.com/store/apps/details?id=com.shaplogicians.theka_online&hl=en',
+                          );
+                          if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                            Get.snackbar("Error", "Could not launch Play Store");
+                          }
+                        },
                       ),
 
                       SizedBox(height: 15.h),

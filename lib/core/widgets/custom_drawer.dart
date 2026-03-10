@@ -12,7 +12,8 @@ import 'package:quickserve/views/Legal/privacy_policy_page.dart';
 import 'package:quickserve/views/Legal/terms_and_conditions_page.dart';
 import 'package:quickserve/views/Legal/about_page.dart';
 import 'package:quickserve/views/Auth/login_type_page.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../views/Auth/Login/login_page.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -139,6 +140,37 @@ class CustomDrawer extends StatelessWidget {
                       iconColor: Colors.blue,
                       textColor: Colors.blue.shade800,
                       onTap: () => Get.to(() => const TermsAndConditionsPage()),
+                    ),
+                    SizedBox(height: 12.h),
+
+                    _buildDrawerTile(
+                      title: "share_app".tr,
+                      icon: Icons.share_outlined,
+                      containerColor: Colors.blue.shade50,
+                      iconColor: Colors.blue,
+                      textColor: Colors.blue.shade800,
+                      onTap: () {
+                        Share.share(
+                          'Check out Theeka Online on Play Store: https://play.google.com/store/apps/details?id=com.shaplogicians.theka_online&hl=en',
+                        );
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+
+                    _buildDrawerTile(
+                      title: "rate_on_playstore".tr,
+                      icon: Icons.star_rate_outlined,
+                      containerColor: Colors.blue.shade50,
+                      iconColor: Colors.blue,
+                      textColor: Colors.blue.shade800,
+                      onTap: () async {
+                        final Uri url = Uri.parse(
+                          'https://play.google.com/store/apps/details?id=com.shaplogicians.theka_online&hl=en',
+                        );
+                        if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                          Get.snackbar("Error", "Could not launch Play Store");
+                        }
+                      },
                     ),
                     SizedBox(height: 12.h),
 

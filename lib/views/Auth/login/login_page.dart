@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:quickserve/core/constants/appColors.dart';
 import 'package:quickserve/core/widgets/custom_button.dart';
 import 'package:quickserve/core/widgets/custom_text_field.dart';
-import 'package:quickserve/views/Auth/Register/CustomerRegister/customer_register_page.dart';
 import 'package:quickserve/views/Auth/forgot_password/forgot_password_page.dart';
 import 'package:quickserve/core/widgets/language_selector.dart';
 import '../login_type_page.dart';
@@ -14,7 +13,6 @@ import 'login_controller.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  @override
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LoginController());
@@ -253,22 +251,18 @@ class LoginPage extends StatelessWidget {
                             Obx(() {
                               if (controller.isPhoneLogin.value) {
                                 return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
+                                    // Phone number row
                                     Row(
                                       children: [
                                         Container(
                                           height: 55.h,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 15.w,
-                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 15.w),
                                           decoration: BoxDecoration(
                                             color: Colors.grey[50],
-                                            borderRadius: BorderRadius.circular(
-                                              14.r,
-                                            ),
-                                            border: Border.all(
-                                              color: Colors.grey[300]!,
-                                            ),
+                                            borderRadius: BorderRadius.circular(14.r),
+                                            border: Border.all(color: Colors.grey[300]!),
                                           ),
                                           child: Center(
                                             child: Text(
@@ -284,27 +278,20 @@ class LoginPage extends StatelessWidget {
                                         SizedBox(width: 10.w),
                                         Expanded(
                                           child: TextFormField(
-                                            controller:
-                                                controller.phoneController,
+                                            controller: controller.phoneController,
                                             keyboardType: TextInputType.number,
                                             maxLength: 10,
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            enabled: !controller.showOtpSection.value,
+                                            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
                                             validator: (value) {
-                                              if (value == null ||
-                                                  value.trim().isEmpty) {
+                                              if (value == null || value.trim().isEmpty) {
                                                 return "enter_phone_number".tr;
                                               }
                                               if (value.trim().length != 10) {
-                                                return "invalid_phone"
-                                                    .tr; // I should check if invalid_phone exists or use another key
+                                                return "invalid_phone".tr;
                                               }
-                                              if (!value.trim().startsWith(
-                                                '3',
-                                              )) {
-                                                return "Phone must start with 3"; // TODO: Localize later if needed
+                                              if (!value.trim().startsWith('3')) {
+                                                return "Phone must start with 3";
                                               }
                                               return null;
                                             },
@@ -312,184 +299,115 @@ class LoginPage extends StatelessWidget {
                                               counterText: "",
                                               hintText: "phone_hint_login".tr,
                                               filled: true,
-                                              fillColor: Colors.grey[50],
-                                              hintStyle: TextStyle(
-                                                fontSize: 15.sp,
-                                                color: Colors.grey[400],
-                                              ),
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                    vertical: 16.h,
-                                                    horizontal: 16.w,
-                                                  ),
+                                              fillColor: controller.showOtpSection.value
+                                                  ? Colors.grey[100]
+                                                  : Colors.grey[50],
+                                              hintStyle: TextStyle(fontSize: 15.sp, color: Colors.grey[400]),
+                                              contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
                                               border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(14.r),
-                                                borderSide: BorderSide(
-                                                  color: Colors.grey[300]!,
-                                                ),
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: BorderSide(color: Colors.grey[300]!),
                                               ),
                                               enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(14.r),
-                                                borderSide: BorderSide(
-                                                  color: Colors.grey[300]!,
-                                                ),
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: BorderSide(color: Colors.grey[300]!),
                                               ),
                                               focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(14.r),
-                                                borderSide: BorderSide(
-                                                  color: AppColors.primary,
-                                                ),
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: BorderSide(color: AppColors.primary),
                                               ),
                                               errorBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(14.r),
-                                                borderSide: BorderSide(
-                                                  color: Colors.red,
-                                                ),
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: const BorderSide(color: Colors.red),
                                               ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14.r,
-                                                        ),
-                                                    borderSide: BorderSide(
-                                                      color: Colors.red,
-                                                      width: 2,
-                                                    ),
-                                                  ),
+                                              focusedErrorBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: const BorderSide(color: Colors.red, width: 2),
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
 
-                                    // OTP Section inside Phone Login
-                                    Obx(() {
-                                      if (controller.showOtpSection.value) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(top: 20.h),
-                                          child: Column(
+                                    // OTP input (shown after OTP is sent)
+                                    Obx(() => controller.showOtpSection.value
+                                        ? Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
                                             children: [
-                                              Container(
-                                                padding: EdgeInsets.all(12.w),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue
-                                                      .withOpacity(0.05),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        10.r,
-                                                      ),
-                                                  border: Border.all(
-                                                    color: Colors.blue
-                                                        .withOpacity(0.1),
-                                                  ),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .mark_email_unread_outlined,
-                                                      color: Colors.blue,
-                                                      size: 20.sp,
-                                                    ),
-                                                    SizedBox(width: 10.w),
-                                                    Expanded(
-                                                      child: Text(
-                                                        "${"otp_sent_to_phone".tr}${controller.phoneController.text}",
-                                                        style: TextStyle(
-                                                          fontSize: 13.sp,
-                                                          color:
-                                                              Colors.blue[800],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
                                               SizedBox(height: 15.h),
-                                              CustomTextField(
-                                                controller:
-                                                    controller.otpController,
-                                                hintText:
-                                                    "enter_6_digit_otp_hint".tr,
-                                                prefixIcon:
-                                                    Icons.password_rounded,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.trim().isEmpty) {
-                                                    return "enter_otp".tr;
-                                                  }
-                                                  if (value.trim().length !=
-                                                      6) {
-                                                    return "enter_otp".tr;
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                              SizedBox(height: 10.h),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: TextButton(
-                                                  onPressed: () => controller
-                                                      .resendLoginOtp(context),
-                                                  style: TextButton.styleFrom(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 10.w,
-                                                        ),
-                                                    minimumSize: Size.zero,
-                                                    tapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
+                                              TextFormField(
+                                                controller: controller.otpController,
+                                                keyboardType: TextInputType.number,
+                                                maxLength: 6,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 22.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 8,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  counterText: "",
+                                                  hintText: "Enter OTP",
+                                                  hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey[400], letterSpacing: 2),
+                                                  filled: true,
+                                                  fillColor: Colors.grey[50],
+                                                  contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(14.r),
+                                                    borderSide: BorderSide(color: Colors.grey[300]!),
                                                   ),
+                                                  enabledBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(14.r),
+                                                    borderSide: BorderSide(color: Colors.grey[300]!),
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(14.r),
+                                                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 8.h),
+                                              // Resend link
+                                              Align(
+                                                alignment: Alignment.centerRight,
+                                                child: Obx(() => TextButton(
+                                                  onPressed: controller.isLoading.value
+                                                      ? null
+                                                      : () => controller.resendLoginOtp(context),
                                                   child: Text(
-                                                    "resend_otp".tr,
+                                                    "Resend OTP",
                                                     style: TextStyle(
                                                       color: AppColors.primary,
-                                                      fontWeight:
-                                                          FontWeight.w600,
                                                       fontSize: 13.sp,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
-                                                ),
+                                                )),
                                               ),
                                             ],
-                                          ),
-                                        );
-                                      }
-                                      return SizedBox(height: 20.h);
-                                    }),
+                                          )
+                                        : const SizedBox.shrink()),
 
                                     SizedBox(height: 10.h),
-                                    Obx(
-                                      () => CustomButton(
-                                        text: controller.isLoading.value
-                                            ? "processing".tr
-                                            : controller.showOtpSection.value
-                                            ? "verify_and_login".tr
-                                            : "get_otp".tr,
-                                        onPressed: () {
-                                          if (!controller.isLoading.value) {
-                                            if (controller
-                                                .showOtpSection
-                                                .value) {
-                                              controller.verifyOtpAndLogin(
-                                                context,
-                                              );
-                                            } else {
-                                              controller.sendLoginOtp(context);
-                                            }
+
+                                    // Send OTP / Verify button
+                                    Obx(() => CustomButton(
+                                      text: controller.isLoading.value
+                                          ? "processing".tr
+                                          : controller.showOtpSection.value
+                                              ? "verify_and_login".tr
+                                              : "login".tr,
+                                      onPressed: () {
+                                        if (!controller.isLoading.value) {
+                                          if (controller.showOtpSection.value) {
+                                            controller.verifyOtpAndLogin(context);
+                                          } else {
+                                            controller.sendLoginOtp(context);
                                           }
-                                        },
-                                      ),
-                                    ),
+                                        }
+                                      },
+                                    )),
                                   ],
                                 );
                               }

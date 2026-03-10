@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quickserve/core/constants/appColors.dart';
+import 'package:quickserve/core/services/vt_otp_service.dart';
 import 'package:quickserve/views/CustomerHome/widgets/home_page.dart';
 import 'dart:io';
 import 'package:quickserve/views/Auth/AuthService/auth_service.dart';
@@ -24,42 +25,19 @@ class CustomerRegisterController extends GetxController {
   final isLoading = false.obs;
   final selectedCity = ''.obs;
   final showOtpSection = false.obs;
-  final verificationId = ''.obs;
-  final resendToken = 0.obs;
   final selectedImageFile = Rx<XFile?>(null);
 
-  // Persistent data variables
+  // Persistent data saved before async operations
   final savedName = ''.obs;
   final savedEmail = ''.obs;
   final savedPhone = ''.obs;
   final savedCity = ''.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    print("🔧 Initializing Firebase Auth settings...");
-    _configureFirebaseAuth();
-  }
-
-  void _configureFirebaseAuth() {
-    try {
-      _auth.setSettings(
-        appVerificationDisabledForTesting: false,
-        forceRecaptchaFlow: false,
-      );
-      print("✅ Firebase Auth settings configured");
-    } catch (e) {
-      print("⚠️ Could not configure auth settings: ${e.toString()}");
-    }
-  }
-
-  // Send OTP to phone number
+  // ==================== STEP 1: Send OTP ====================
   Future<void> sendOtp(BuildContext context) async {
-    print("==================== SEND OTP STARTED ====================");
+    debugPrint("==================== SEND OTP STARTED ====================");
 
-    // Validate all fields using formKey
     if (formKey.currentState == null || !formKey.currentState!.validate()) {
-      print("❌ Validation Failed via formKey");
       _showErrorDialog(context, "Please fill all required fields correctly");
       return;
     }
@@ -69,323 +47,182 @@ class CustomerRegisterController extends GetxController {
       return;
     }
 
-    print("✅ All validations passed");
-
     try {
       isLoading.value = true;
-      print("🔄 Loading started");
 
-      // Format phone number
-      String formattedPhone = "+92${phoneController.text.trim()}";
-      print("📱 Formatted phone number: $formattedPhone");
+      String rawPhone = phoneController.text.trim();
+      String formattedPhone = "+92$rawPhone";
 
-      // SAVE DATA BEFORE ASYNC
+      // Save form data before any async gap
       savedName.value = nameController.text.trim();
       savedEmail.value = emailController.text.trim();
       savedPhone.value = formattedPhone;
       savedCity.value = selectedCity.value;
-      print("💾 Saved Customer Data: ${savedName.value}, ${savedPhone.value}");
 
-      // Check if phone already exists
-      print("🔍 Checking if phone number already exists in Firestore...");
+      // Check if phone already registered
+      debugPrint("🔍 Checking if phone already registered: $formattedPhone");
       final phoneQuery = await FirebaseFirestore.instance
           .collection("Customers")
           .where("phone", isEqualTo: formattedPhone)
           .get();
 
       if (phoneQuery.docs.isNotEmpty) {
-        print("❌ Phone number already registered");
-        _showErrorDialog(context, "Phone number already registered");
         isLoading.value = false;
+        _showErrorDialog(context, "Phone number already registered. Please login.");
         return;
       }
-      print("✅ Phone number is available");
 
-      // Check if email already exists (only if email is provided)
-      if (emailController.text.trim().isNotEmpty) {
-        print("🔍 Checking if email already exists in Firestore...");
-        final emailQuery = await FirebaseFirestore.instance
-            .collection("Customers")
-            .where("email", isEqualTo: emailController.text.trim())
-            .get();
+      // Also check ServiceProviders
+      final providerQuery = await FirebaseFirestore.instance
+          .collection("ServiceProviders")
+          .where("phone", isEqualTo: formattedPhone)
+          .get();
 
-        if (emailQuery.docs.isNotEmpty) {
-          print("❌ Email already registered");
-          _showErrorDialog(context, "Email already registered");
-          isLoading.value = false;
-          return;
-        }
-        print("✅ Email is available");
+      if (providerQuery.docs.isNotEmpty) {
+        isLoading.value = false;
+        _showErrorDialog(context, "This phone number is already registered as a Service Provider.");
+        return;
       }
 
-      // Send OTP
-      print("📤 Sending OTP to: $formattedPhone");
-      print("🔑 Using resend token: ${resendToken.value}");
+      debugPrint("📤 Sending OTP to $formattedPhone via VeevoTech...");
+      final result = await VtOtpService.instance.sendOtp(formattedPhone);
 
-      await _auth.verifyPhoneNumber(
-        phoneNumber: formattedPhone,
-        timeout: const Duration(seconds: 120),
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          print("✅ Auto verification completed");
-          print("📋 Credential: ${credential.smsCode}");
-          if (credential.smsCode != null) {
-            otpController.text = credential.smsCode!;
-            print("🔢 Auto-filled OTP: ${credential.smsCode}");
-          }
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print("❌ Verification Failed");
-          print("Error code: ${e.code}");
-          print("Error message: ${e.message}");
-
-          isLoading.value = false;
-          String errorMessage = "Phone verification failed";
-
-          if (e.code == 'invalid-phone-number') {
-            errorMessage = "Invalid phone number format";
-          } else if (e.code == 'too-many-requests') {
-            errorMessage = "Too many attempts. Please try again after some time";
-            print("⚠️ Too many requests - Firebase has temporarily blocked this number");
-          } else if (e.code == 'quota-exceeded') {
-            errorMessage = "SMS quota exceeded. Please try again later";
-            print("⚠️ SMS quota exceeded");
-          } else if (e.code == 'network-request-failed') {
-            errorMessage = "Network error. Please check your connection";
-          }
-
-          // Show dialog for consistency as requested
-          _showErrorDialog(context, errorMessage);
-        },
-        codeSent: (String verificationIdReceived, int? resendTokenReceived) {
-          print("✅ OTP sent successfully");
-          print("📋 Verification ID: $verificationIdReceived");
-          print("🔢 Resend Token: $resendTokenReceived");
-
-          verificationId.value = verificationIdReceived;
-          if (resendTokenReceived != null) {
-            resendToken.value = resendTokenReceived;
-            print("💾 Saved resend token for future use");
-          }
-
-          showOtpSection.value = true;
-          isLoading.value = false;
-
-          Get.snackbar(
-            "Success",
-            "OTP sent to $formattedPhone",
-            backgroundColor: AppColors.green,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 3),
-          );
-
-          print("📱 OTP section now visible");
-        },
-        codeAutoRetrievalTimeout: (String verificationIdReceived) {
-          print("⏱️ Auto retrieval timeout");
-          print("📋 Verification ID: $verificationIdReceived");
-          verificationId.value = verificationIdReceived;
-        },
-        forceResendingToken: resendToken.value != 0 ? resendToken.value : null,
-      );
-
+      if (result.isSuccess) {
+        showOtpSection.value = true;
+        _showSnackbar("Success", "OTP sent to $formattedPhone");
+        debugPrint("✅ OTP sent successfully");
+      } else {
+        _showErrorDialog(context, result.errorMessage ?? "Failed to send OTP");
+      }
     } catch (e) {
-      print("❌ Error in sendOtp: ${e.toString()}");
-      print("📍 Error type: ${e.runtimeType}");
-
+      debugPrint("❌ Error in sendOtp: ${e.toString()}");
+      _showErrorDialog(context, "An error occurred while sending OTP");
+    } finally {
       isLoading.value = false;
-
-      String errorMessage = "An error occurred while sending OTP";
-
-      if (e.toString().contains('reCAPTCHA')) {
-        errorMessage = "Verification failed. Please try again";
-        print("⚠️ reCAPTCHA error detected");
-      } else if (e.toString().contains('network')) {
-        errorMessage = "Network error. Please check your connection";
-      }
-
-      _showErrorDialog(context, errorMessage);
     }
 
-    print("==================== SEND OTP ENDED ====================\n");
+    debugPrint("==================== SEND OTP ENDED ====================\n");
   }
 
-  // Verify OTP and Register User - UPDATED TO GO TO HOMEPAGE
+  // ==================== STEP 2: Verify OTP & Register ====================
   Future<void> verifyOtpAndRegister(BuildContext context) async {
-    print("==================== VERIFY OTP STARTED ====================");
+    debugPrint("==================== VERIFY OTP STARTED ====================");
 
-    if (formKey.currentState == null || !formKey.currentState!.validate()) {
-      print("❌ OTP Validation Failed via formKey");
+    final otp = otpController.text.trim();
+    if (otp.isEmpty) {
+      _showErrorDialog(context, "Please enter the OTP");
       return;
     }
 
-    print("✅ OTP validation passed");
-    print("🔢 Entered OTP: ${otpController.text.trim()}");
-
     try {
       isLoading.value = true;
-      print("🔄 Loading started");
 
-      // Create PhoneAuthCredential
-      print("🔐 Creating PhoneAuthCredential...");
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId.value,
-        smsCode: otpController.text.trim(),
-      );
-      print("✅ PhoneAuthCredential created");
+      final verifyResult =
+          VtOtpService.instance.verifyOtp(savedPhone.value, otp);
 
-      // Sign in with phone credential
-      print("📲 Signing in with phone credential...");
-      UserCredential phoneAuthResult = await _auth.signInWithCredential(credential);
-      print("✅ Phone authentication successful");
-      print("👤 User UID: ${phoneAuthResult.user!.uid}");
-
-      String formattedPhone = "+92${phoneController.text.trim()}";
-      String finalEmail = emailController.text.trim();
-
-      // If email is provided, link it to the account
-      // If email is provided, TRY to link it, but don't block registration if it fails
-      if (finalEmail.isNotEmpty) {
-        print("📧 Email provided, attempting to link...");
-        try {
-          AuthCredential emailCredential = EmailAuthProvider.credential(
-            email: finalEmail,
-            password: passwordController.text.trim(),
-          );
-
-          await phoneAuthResult.user!.linkWithCredential(emailCredential);
-          print("✅ Email linked successfully");
-        } catch (e) {
-          // KEY FIX: If linking fails (e.g. invalid email, used email), just log it
-          // and CONTINUE registration. Do not sign out or show error.
-          print("⚠️ Email linking failed but proceeding: $e");
-          // We can optionally show a small toast, but user asked for "no error"
-        }
-      } else {
-        print("ℹ️ No email provided, skipping email linking");
+      switch (verifyResult) {
+        case VtOtpVerifyResult.valid:
+          debugPrint("✅ OTP verified. Proceeding with registration...");
+          await _createAccount(context);
+          break;
+        case VtOtpVerifyResult.invalid:
+          _showErrorDialog(context, "Invalid OTP code. Please check and try again.");
+          break;
+        case VtOtpVerifyResult.expired:
+          showOtpSection.value = false;
+          otpController.clear();
+          _showErrorDialog(context, "OTP has expired. Please request a new one.");
+          break;
+        case VtOtpVerifyResult.notFound:
+          _showErrorDialog(context, "No OTP found. Please tap 'Send OTP' first.");
+          break;
       }
-
-      print("💾 Saving user data to Firestore...");
-      
-      String profileUrl = "";
-      if (selectedImageFile.value != null) {
-        print("📤 Uploading profile image...");
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('profile_images/${phoneAuthResult.user!.uid}');
-        final uploadTask = await ref.putFile(File(selectedImageFile.value!.path));
-        profileUrl = await uploadTask.ref.getDownloadURL();
-        print("✅ Image uploaded: $profileUrl");
-      }
-
-      Map<String, dynamic> userData = {
-        "uid": phoneAuthResult.user!.uid,
-        "name": savedName.value.isNotEmpty ? savedName.value : nameController.text.trim(),
-        "phone": savedPhone.value.isNotEmpty ? savedPhone.value : formattedPhone,
-        "city": savedCity.value.isNotEmpty ? savedCity.value : selectedCity.value,
-        "role": "customer",
-        "profileImage": profileUrl,
-        "createdAt": FieldValue.serverTimestamp(),
-      };
-
-      // Add email only if provided
-      if (finalEmail.isNotEmpty) {
-        userData["email"] = finalEmail;
-        print("📧 Email added to user data: $finalEmail");
-      } else {
-        print("ℹ️ No email in user data");
-      }
-
-      print("📋 User data to save: $userData");
-
-      await FirebaseFirestore.instance
-          .collection("Customers")
-          .doc(phoneAuthResult.user!.uid)
-          .set(userData);
-
-      print("✅ User data saved to Firestore");
-
-      // Clear the resend token after successful registration
-      resendToken.value = 0;
-      print("🧹 Cleared resend token");
-
-      Get.snackbar(
-        "Success",
-        "Account created successfully!",
-        backgroundColor: AppColors.green,
-        colorText: Colors.white,
-      );
-
-      print("🚀 Navigating to Customer HomePage...");
-      // Save role as customer
-      await AuthService.saveRole('customer');
-      
-      // Navigate directly to Customer HomePage
-      await Future.delayed(const Duration(milliseconds: 500));
-      Get.offAll(() => HomePage());
-
-    } on FirebaseAuthException catch (e) {
-      print("❌ FirebaseAuthException occurred");
-      print("Error code: ${e.code}");
-      print("Error message: ${e.message}");
-
-      String errorMessage = "Verification failed";
-
-      if (e.code == 'invalid-verification-code') {
-        errorMessage = "Invalid OTP code. Please check and try again";
-      } else if (e.code == 'session-expired') {
-        errorMessage = "OTP expired. Please request a new one";
-        showOtpSection.value = false;
-        otpController.clear();
-      } else if (e.code == 'invalid-verification-id') {
-        errorMessage = "Verification session expired. Please try again";
-        showOtpSection.value = false;
-        otpController.clear();
-      }
-
-      _showErrorDialog(context, errorMessage);
     } catch (e) {
-      print("❌ Error in verifyOtpAndRegister: ${e.toString()}");
+      debugPrint("❌ Error in verifyOtpAndRegister: ${e.toString()}");
       _showErrorDialog(context, "An error occurred: ${e.toString()}");
     } finally {
       isLoading.value = false;
-      print("🔄 Loading ended");
     }
 
-    print("==================== VERIFY OTP ENDED ====================\n");
+    debugPrint("==================== VERIFY OTP ENDED ====================\n");
   }
 
-  // Helper to show error dialog
-  void _showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
+  Future<void> _createAccount(BuildContext context) async {
+    String rawPhone = savedPhone.value.replaceAll('+92', '');
+    String dummyEmail = "user_$rawPhone@thekaonline.pk";
+    String dummyPassword = "pw_${rawPhone}_stable";
+
+    debugPrint("🔐 Authenticating Firebase account: $dummyEmail");
+    UserCredential userCredential;
+    try {
+      userCredential = await _auth.createUserWithEmailAndPassword(
+        email: dummyEmail,
+        password: dummyPassword,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        debugPrint("ℹ️ Email already in use. Attempting sign-in with dummy credentials...");
+        userCredential = await _auth.signInWithEmailAndPassword(
+          email: dummyEmail,
+          password: dummyPassword,
+        );
+      } else {
+        rethrow;
+      }
+    }
+
+    final user = userCredential.user;
+    if (user == null) throw Exception("Registration failed");
+
+    debugPrint("✅ Firebase authenticated. UID: ${user.uid}");
+
+    // Upload profile image
+    String profileUrl = "";
+    if (selectedImageFile.value != null) {
+      debugPrint("📤 Uploading profile image...");
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('profile_images/${user.uid}');
+      await ref.putFile(File(selectedImageFile.value!.path));
+      profileUrl = await ref.getDownloadURL();
+    }
+
+    // Save to Firestore
+    Map<String, dynamic> userData = {
+      "uid": user.uid,
+      "name": savedName.value,
+      "phone": savedPhone.value,
+      "city": savedCity.value,
+      "role": "customer",
+      "profileImage": profileUrl,
+      "createdAt": FieldValue.serverTimestamp(),
+    };
+
+    if (savedEmail.value.isNotEmpty) {
+      userData["email"] = savedEmail.value;
+    }
+
+    await FirebaseFirestore.instance
+        .collection("Customers")
+        .doc(user.uid)
+        .set(userData);
+
+    debugPrint("✅ User data saved to Firestore");
+
+    await AuthService.saveRole('customer');
+    _showSnackbar("Success", "Account created successfully!");
+    Get.offAll(() => HomePage());
   }
 
-  // Resend OTP with proper token handling
+  // ==================== RESEND OTP ====================
   Future<void> resendOtp(BuildContext context) async {
-    print("==================== RESEND OTP STARTED ====================");
-    print("🔄 Resending OTP...");
-    print("🔑 Current resend token: ${resendToken.value}");
-
     otpController.clear();
-    print("🧹 Cleared OTP input");
-
+    showOtpSection.value = false;
     await sendOtp(context);
-
-    print("==================== RESEND OTP ENDED ====================\n");
   }
 
-  Future<void> pickImage() async {
+  // ==================== IMAGE PICKER ====================
+  Future<void> pickImage(BuildContext context) async {
     Get.bottomSheet(
       SafeArea(
         child: Container(
@@ -400,7 +237,9 @@ class CustomerRegisterController extends GetxController {
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Take a Photo'),
                 onTap: () async {
-                  Get.back();
+                  Navigator.pop(context);
+                  // Small delay to ensure bottom sheet closes before picker opens
+                  await Future.delayed(const Duration(milliseconds: 300));
                   await _pickImage(ImageSource.camera);
                 },
               ),
@@ -408,14 +247,16 @@ class CustomerRegisterController extends GetxController {
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Choose from Gallery'),
                 onTap: () async {
-                  Get.back();
+                  Navigator.pop(context);
+                  // Small delay to ensure bottom sheet closes before picker opens
+                  await Future.delayed(const Duration(milliseconds: 300));
                   await _pickImage(ImageSource.gallery);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.close),
                 title: const Text('Cancel'),
-                onTap: () => Get.back(),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),
@@ -447,13 +288,43 @@ class CustomerRegisterController extends GetxController {
       }
     } catch (e) {
       _showErrorDialog(Get.context!, 'Failed to pick image');
-      print('Image picker error: $e');
+      debugPrint('Image picker error: $e');
     }
+  }
+
+  // ==================== HELPERS ====================
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(message),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Future.microtask(() {
+      Get.snackbar(
+        title,
+        message,
+        backgroundColor: isError ? AppColors.red : AppColors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
+    });
   }
 
   @override
   void onClose() {
-    print("🧹 Disposing controllers...");
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();

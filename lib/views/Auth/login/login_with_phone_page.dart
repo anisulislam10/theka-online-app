@@ -15,11 +15,7 @@ class LoginWithPhonePage extends StatefulWidget {
 }
 
 class _LoginWithPhonePageState extends State<LoginWithPhonePage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final phoneController = TextEditingController();
-  final otpController = TextEditingController();
-  String verificationId = "";
-  bool isOTPSent = false;
+  final LoginController controller = Get.put(LoginController());
   bool isLoading = false;
 
   // Send OTP to phone number
@@ -170,7 +166,7 @@ class _LoginWithPhonePageState extends State<LoginWithPhonePage> {
                     ),
                     Expanded(
                       child: TextField(
-                        controller: phoneController,
+                        controller: controller.phoneController,
                         keyboardType: TextInputType.number,
                         maxLength: 10,
                         inputFormatters: [
@@ -202,68 +198,33 @@ class _LoginWithPhonePageState extends State<LoginWithPhonePage> {
                   ],
                 ),
 
-                // OTP input if sent
-                if (isOTPSent) ...[
-                  SizedBox(height: 20.h),
-                  Pinput(
-                    length: 6,
-                    controller: otpController,
-                    defaultPinTheme: PinTheme(
-                      width: 50.w,
-                      height: 55.h,
-                      textStyle: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                    ),
-                    focusedPinTheme: PinTheme(
-                      width: 50.w,
-                      height: 55.h,
-                      textStyle: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                ],
-
                 SizedBox(height: 30.h),
                 SizedBox(
                   width: double.infinity,
                   height: 50.h,
-                  child: ElevatedButton(
-                    onPressed: isLoading
-                        ? null
-                        : isOTPSent
-                        ? verifyOTP
-                        : sendOTP,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.r),
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () => controller.loginWithPhoneNoOtp(context),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        backgroundColor: AppColors.primary,
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                      backgroundColor: AppColors.primary,
-                    ),
-                    child: isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                            isOTPSent ? "Verify OTP" : "Send OTP",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      child: controller.isLoading.value
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              "login".tr,
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
+                    ),
                   ),
                 ),
               ],

@@ -87,7 +87,7 @@ class _AccountVerificationScreenState extends State<AccountVerificationScreen>
             });
           }
         });
-      } else if (status == 'declined') {
+      } else if (status == 'declined' || status == 'rejected') {
         _controller.stop();
       }
     });
@@ -101,7 +101,7 @@ class _AccountVerificationScreenState extends State<AccountVerificationScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDeclined = verificationStatus == 'declined';
+    final isRejected = verificationStatus == 'declined' || verificationStatus == 'rejected';
 
     return Scaffold(
       backgroundColor: AppColors.primary,
@@ -109,7 +109,7 @@ class _AccountVerificationScreenState extends State<AccountVerificationScreen>
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
           child: Center(
-            child: isDeclined
+            child: isRejected
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -126,18 +126,47 @@ class _AccountVerificationScreenState extends State<AccountVerificationScreen>
                       ),
                       SizedBox(height: 15.h),
 
-                      // Default reason text if none found
-                      Text(
-                        reason.isNotEmpty
-                            ? reason
-                            : "verification_declined_message".tr,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 16.sp,
-                          height: 1.5,
+                      if (reason.isNotEmpty)
+                        Container(
+                          padding: EdgeInsets.all(15.r),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10.r),
+                            border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                "rejection_reason_label".tr,
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                              SizedBox(height: 8.h),
+                              Text(
+                                reason,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Text(
+                          "verification_declined_message".tr,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 16.sp,
+                            height: 1.5,
+                          ),
                         ),
-                      ),
                     ],
                   )
                 : Column(

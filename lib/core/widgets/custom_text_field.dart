@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final String? Function(String?)? validator;
   final bool enabled;
+  final int? maxLength;
 
   const CustomTextField({
     super.key,
@@ -21,6 +22,7 @@ class CustomTextField extends StatefulWidget {
     this.obscureText = false,
     this.validator,
     this.enabled = true,
+    this.maxLength,
   });
 
   @override
@@ -44,6 +46,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       enabled: widget.enabled,
       readOnly: !widget.enabled,
+      maxLength: widget.maxLength,
       validator: widget.validator,
       decoration: InputDecoration(
         labelText: widget.hintText,

@@ -131,9 +131,29 @@
     "en": "About",
     "ur": "ہمارے بارے میں"
   },
+  "share_app": {
+    "en": "Share App",
+    "ur": "ایپ شیئر کریں"
+  },
+  "rate_on_playstore": {
+    "en": "Rate on Playstore",
+    "ur": "پلے اسٹور پر ریٹ کریں"
+  },
   "confirm_logout": {
     "en": "Confirm Logout",
     "ur": "لاگ آؤٹ کی تصدیق کریں"
+  },
+  "update_required": {
+    "en": "Update Required",
+    "ur": "اپ ڈیٹ ضروری ہے"
+  },
+  "please_update_app_message": {
+    "en": "A new version of the app is available. Please update to continue using the service.",
+    "ur": "ایپ کا نیا ورژن دستیاب ہے۔ براہ کرم سروس کا استعمال جاری رکھنے کے لیے اپ ڈیٹ کریں۔"
+  },
+  "update_now": {
+    "en": "Update Now",
+    "ur": "ابھی اپ ڈیٹ کریں"
   },
   "are_you_sure_you_want_to_logout?": {
     "en": "Are you sure you want to logout?",
@@ -487,6 +507,10 @@
     "en": "Your account verification was declined",
     "ur": "آپ کا اکاؤنٹ کی تصدیق مسترد کر دی گئی ہے"
   },
+  "rejection_reason_label": {
+    "en": "Rejection Reason:",
+    "ur": "مسترد کرنے کی وجہ:"
+  },
   "rate_customer": {
     "en": "Rate Customer",
     "ur": "کسٹمر کی درجہ بندی کریں"
@@ -638,6 +662,10 @@
   "processing": {
     "en": "Processing...",
     "ur": "عمل جاری ہے..."
+  },
+  "continue": {
+    "en": "Continue",
+    "ur": "جاری رکھیں"
   },
   "verify_otp_continue": {
     "en": "Verify OTP & Continue",
@@ -1154,5 +1182,177 @@
   "see_reviews": {
     "en": "See Reviews",
     "ur": "جائزے دیکھیں"
+  },
+  "about_title_subtitle": {
+    "en": "Theka Online – Hire Faster, Get Hired Smarter",
+    "ur": "ٹھیکہ آن لائن - تیزی سے ہائر کریں، سمجھداری سے کام پائیں"
+  },
+  "about_description_1": {
+    "en": "Theka Online is your smart hiring and job-finding companion, designed to bridge the gap between employers and skilled workers in a fast, direct, and reliable way. Whether you are looking to hire a plumber, electrician, carpenter, painter, driver, cleaner, or any other skilled professional — Theka Online helps you find the right person at the right time.",
+    "ur": "ٹھیکہ آن لائن آپ کا ہائرنگ اور کام تلاش کرنے کا بہترین ساتھی ہے، جو آجروں اور ہنر مند کارکنوں کے درمیان فاصلے کو تیزی سے، براہ راست اور قابل اعتماد طریقے سے ختم کرنے کے لیے بنایا گیا ہے۔ چاہے آپ پلمبر، الیکٹریشن، کارپینٹر، پینٹر، ڈرائیور، کلینر، یا کسی دوسرے ہنر مند پیشہ ور کو ہائر کرنا چاہتے ہوں — ٹھیکہ آن لائن آپ کو صحیح وقت پر صحیح شخص تلاش کرنے میں مدد کرتا ہے۔"
+  },
+  "about_description_2": {
+    "en": "Our platform is simple: Employers can browse detailed profiles of verified skilled workers and contact them instantly via phone or WhatsApp. Job seekers can create professional profiles showcasing their expertise, making it easy for employers to find and hire them without complicated processes.",
+    "ur": "ہمارا پلیٹ فارم سادہ ہے: آجر تصدیق شدہ ہنر مند کارکنوں کے تفصیلی پروفائلز دیکھ سکتے ہیں اور ان سے فون یا واٹس ایپ کے ذریعے فوری رابطہ کر سکتے ہیں۔ ملازمت کے متلاشی اپنی مہارت کو ظاہر کرنے والے پیشہ ورانہ پروفائلز بنا سکتے ہیں، جس سے آجروں کے لیے پیچیدہ عمل کے بغیر انہیں تلاش کرنا اور ہائر کرنا آسان ہو جاتا ہے۔"
+  },
+  "about_for_employers": {
+    "en": "For Employers",
+    "ur": "آجروں کے لیے"
+  },
+  "about_employer_point_1": {
+    "en": "Discover Skilled Workers – Search across multiple job categories to find exactly who you need.",
+    "ur": "ہنر مند کارکنوں کو تلاش کریں — اپنی ضرورت کے مطابق کسی کو بھی تلاش کرنے کے لیے متعدد کیٹیگریز میں سرچ کریں۔"
+  },
+  "about_employer_point_2": {
+    "en": "View Detailed Profiles – Check skills, work experience, and specialties at a glance.",
+    "ur": "تفصیلی پروفائلز دیکھیں — مہارت، کام کا تجربہ، اور خصوصیات کو ایک نظر میں دیکھیں۔"
+  },
+  "about_employer_point_3": {
+    "en": "Instant Communication – Contact workers directly via phone call or WhatsApp—no delays.",
+    "ur": "فوری رابطہ — کارکنوں سے براہِ راست فون کال یا واٹس ایپ کے ذریعے رابطہ کریں—بغیر کسی تاخیر کے۔"
+  },
+  "about_employer_point_4": {
+    "en": "Save Time – Skip middlemen and slow hiring processes. Connect directly to the talent.",
+    "ur": "وقت بچائیں — درمیانی آدمیوں اور سست پراسیس سے بچیں۔ براہِ راست ٹیلنٹ سے رابطہ کریں۔"
+  },
+  "about_employer_point_5": {
+    "en": "Local Talent Access – Quickly find workers in your city or nearby areas.",
+    "ur": "مقامی ٹیلنٹ تک رسائی — اپنے شہر یا قریبی علاقوں میں کارکنوں کو جلدی سے تلاش کریں۔"
+  },
+  "about_for_job_seekers": {
+    "en": "For Job Seekers",
+    "ur": "ملازمت کے متلاشیوں کے لیے"
+  },
+  "about_worker_point_1": {
+    "en": "Create a Professional profile – Highlight your work history, special skills, and services.",
+    "ur": "پیشہ ورانہ پروفائل بنائیں — اپنی کام کی تاریخ، خاص مہارتوں اور خدمات کو واضح کریں۔"
+  },
+  "about_worker_point_2": {
+    "en": "Get Discovered by Employers – Your profile appears to employers searching in your area.",
+    "ur": "آجروں کی نظر میں آئیں — آپ کا پروفائل آپ کے علاقے میں تلاش کرنے والے آجروں کو نظر آئے گا۔"
+  },
+  "about_worker_point_3": {
+    "en": "Direct Calls from Employers – Receive job opportunities instantly via phone or WhatsApp.",
+    "ur": "آجروں سے براہ راست کالز — فون یا واٹس ایپ کے ذریعے فوری طور پر کام کے مواقع حاصل کریں۔"
+  },
+  "about_worker_point_4": {
+    "en": "Grow Your Career – Build connections with verified employers for long-term work.",
+    "ur": "اپنے کیریئر کو بڑھائیں — طویل مدتی کام کے لیے تصدیق شدہ آجروں کے ساتھ تعلقات بنائیں۔"
+  },
+  "about_worker_point_5": {
+    "en": "Boost Visibility – Update your profile regularly to stay at the top of search results.",
+    "ur": "اپنے پروفائل کی موجودگی بڑھائیں — سرچ کے نتائج میں سب سے اوپر رہنے کے لیے باقاعدگی سے اپنا پروفائل اپ ڈیٹ کریں۔"
+  },
+  "about_key_features": {
+    "en": "Key Features",
+    "ur": "اہم خصوصیات"
+  },
+  "about_feature_1": {
+    "en": "Profile Browsing – Clear, organized worker profiles for quick decision-making.",
+    "ur": "پروفائل براؤزنگ — فوری فیصلے کے لیے کارکنوں کے واضح اور منظم پروفائلز۔"
+  },
+  "about_feature_2": {
+    "en": "Instant Connect – Call or WhatsApp from within the app in just one tap.",
+    "ur": "فوری رابطہ — صرف ایک کلک پر ایپ کے اندر سے کال یا واٹس ایپ کریں۔"
+  },
+  "about_feature_3": {
+    "en": "Easy Navigation – Simple UI, category-based search, and powerful filtering.",
+    "ur": "آسان نیویگیشن — سادہ UI، کیٹیگری پر مبنی تلاش، اور فلٹرنگ۔"
+  },
+  "about_feature_4": {
+    "en": "Multilingual Support – English and Urdu support, with more languages coming soon.",
+    "ur": "کثیر لسانی مدد — انگریزی اور اردو، جلد ہی مزید زبانیں شامل کی جائیں گی۔"
+  },
+  "about_feature_5": {
+    "en": "Privacy-First – Your exact location is never publicly shared.",
+    "ur": "رازداری — آپ کا درست مقام کبھی بھی عوامی طور پر شیئر نہیں کیا جاتا۔"
+  },
+  "about_feature_6": {
+    "en": "Lightweight & Fast – Optimized for low internet usage and quick performance.",
+    "ur": "ہلکی اور تیز رفتار — کم انٹرنیٹ استعمال اور فوری کارکردگی کے لیے بنائی گئی ایپ۔"
+  },
+  "about_feature_7": {
+    "en": "Regular Updates – Constant improvements and new features based on your feedback.",
+    "ur": "باقاعدہ اپ ڈیٹس — آپ کے فیڈ بیک کی بنیاد پر مسلسل بہتری اور نئے فیچرز۔"
+  },
+  "about_how_it_works": {
+    "en": "How It Works",
+    "ur": "یہ کیسے کام کرتا ہے"
+  },
+  "about_how_it_works_employer": {
+    "en": "Employers: Select a category → browse profiles → contact workers directly.",
+    "ur": "آجر: کیٹیگری منتخب کریں ← پروفائلز دیکھیں ← کارکنوں سے براہ راست رابطہ کریں۔"
+  },
+  "about_how_it_works_worker": {
+    "en": "Job Seekers: Create/complete your profile → appear in search results → get contacted by employers.",
+    "ur": "ملازمت کے متلاشی: اپنا پروفائل مکمل کریں ← سرچ کے نتائج میں آئیں ← آجروں سے رابطہ پائیں۔"
+  },
+  "about_who_its_for": {
+    "en": "Who It’s For",
+    "ur": "یہ کس کے لیے ہے"
+  },
+  "about_who_its_for_1": {
+    "en": "Employers & Contractors – Find reliable workers without wasting time.",
+    "ur": "آجر اور ٹھیکیدار — وقت ضائع کیے بغیر قابل اعتماد کارکن تلاش کریں۔"
+  },
+  "about_who_its_for_2": {
+    "en": "Businesses – Hire skilled labor for projects, repairs, or ongoing work.",
+    "ur": "کاروبار — پراجیکٹس، مرمت یا جاری کام کے لیے ہنر مند لیبر کی خدمات حاصل کریں۔"
+  },
+  "about_who_its_for_3": {
+    "en": "Homeowners – Quickly find trusted workers for home maintenance and improvement.",
+    "ur": "گھر مالکان — گھر کی دیکھ بھال اور بہتری کے لیے بھروسہ مند کارکن جلدی سے تلاش کریں۔"
+  },
+  "about_who_its_for_4": {
+    "en": "Job Seekers – Gain visibility, get direct calls, and secure more jobs.",
+    "ur": "ملازمت کے متلاشی — زیادہ کام اور براہ راست کالز کے مواقع پائیں۔"
+  },
+  "about_why_choose_us": {
+    "en": "Why Choose Theka Online?",
+    "ur": "ٹھیکہ آن لائن ہی کیوں؟"
+  },
+  "about_reason_1": {
+    "en": "Direct Communication – No complicated chat systems. Call or message instantly.",
+    "ur": "براہ راست رابطہ — کوئی پیچیدہ چیٹ سسٹم نہیں۔ کال یا میسج فوری کریں۔"
+  },
+  "about_reason_2": {
+    "en": "Verified Listings – We work to ensure profiles are accurate and trustworthy.",
+    "ur": "تصدیق شدہ لسٹنگ — ہم پروفائلز کی درستی اور بھروسہ مندی کو یقینی بناتے ہیں۔"
+  },
+  "about_reason_3": {
+    "en": "Transparent Information – Skills, experience, and contact options at your fingertips.",
+    "ur": "شفاف معلومات — مہارت، تجربہ، اور رابطے کے آپشنز آپ کی انگلیوں پر۔"
+  },
+  "about_reason_4": {
+    "en": "Save Time & Effort – Find or be found within minutes, not days.",
+    "ur": "وقت اور کوشش بچائیں — منٹوں میں تلاش کریں یا تلاش کیے جائیں۔"
+  },
+  "about_reason_5": {
+    "en": "Works Everywhere – Whether in big cities or smaller towns, Theka Online is built for you.",
+    "ur": "ہر جگہ کام کرتا ہے — چاہے بڑے شہر ہوں یا چھوٹے قصبے، ٹھیکہ آن لائن آپ کے لیے ہے۔"
+  },
+  "about_privacy_security": {
+    "en": "Privacy & Security",
+    "ur": "رازداری اور سیکیورٹی"
+  },
+  "about_privacy_note": {
+    "en": "Your trust matters.",
+    "ur": "آپ کا بھروسہ اہم ہے۔"
+  },
+  "about_privacy_point_1": {
+    "en": "We never share your exact location publicly.",
+    "ur": "ہم آپ کا درست مقام کبھی بھی عوامی طور پر ظاہر نہیں کرتے۔"
+  },
+  "about_privacy_point_2": {
+    "en": "Personal details are shown only as part of your public profile if you choose to share them.",
+    "ur": "ذاتی تفصیلات صرف تب ہی ظاہر کی جاتی ہیں جب آپ انہیں اپنے پروفائل پر شیئر کرنے کا انتخاب کرتے ہیں۔"
+  },
+  "about_privacy_point_3": {
+    "en": "We use your data only to improve and deliver our services.",
+    "ur": "ہم آپ کا ڈیٹا صرف اپنی خدمات کو بہتر بنانے کے لیے استعمال کرتے ہیں۔"
+  },
+  "about_privacy_point_4": {
+    "en": "You control what appears on your profile at any time.",
+    "ur": "آپ کا اپنے پروفائل پر مکمل کنٹرول ہے کہ وہاں کیا ظاہر ہو۔"
   }
 }

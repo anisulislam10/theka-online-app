@@ -128,7 +128,7 @@ class CustomerRegisterPage extends StatelessWidget {
                               children: [
                                 // Profile Image Picker
                                 GestureDetector(
-                                  onTap: () => controller.pickImage(),
+                                  onTap: () => controller.pickImage(context),
                                   child: Obx(() => Stack(
                                         children: [
                                           Container(
@@ -411,106 +411,92 @@ class CustomerRegisterPage extends StatelessWidget {
 
                                 SizedBox(height: 20.h),
 
-                                // OTP Section
-                                Obx(() {
-                                  if (controller.showOtpSection.value) {
-                                    return Column(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.all(12.w),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(
-                                              0.05,
+                                // OTP Section (shown after OTP is sent)
+                                Obx(() => controller.showOtpSection.value
+                                    ? Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Text(
+                                            "Enter the 6-digit OTP sent to +92${controller.phoneController.text}",
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              color: Colors.grey[600],
                                             ),
-                                            borderRadius: BorderRadius.circular(
-                                              10.r,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 12.h),
+                                          TextFormField(
+                                            controller: controller.otpController,
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 6,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 22.sp,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 8,
                                             ),
-                                            border: Border.all(
-                                              color: Colors.blue.withOpacity(
-                                                0.1,
+                                            decoration: InputDecoration(
+                                              counterText: "",
+                                              hintText: "000000",
+                                              hintStyle: TextStyle(
+                                                fontSize: 20.sp,
+                                                color: Colors.grey[400],
+                                                letterSpacing: 6,
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.grey[50],
+                                              contentPadding: EdgeInsets.symmetric(
+                                                vertical: 16.h,
+                                                horizontal: 16.w,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: BorderSide(color: Colors.grey[300]!),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: BorderSide(color: Colors.grey[300]!),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                borderSide: BorderSide(color: AppColors.primary, width: 2),
                                               ),
                                             ),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons
-                                                    .mark_email_unread_outlined,
-                                                color: Colors.blue,
-                                                size: 20.sp,
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Expanded(
-                                                child: SmartText(
-                                                  title: "${"otp_sent_to".tr} ${controller.phoneController.text}",
-                                                  size: 13.sp,
-                                                  color: Colors.blue[800],
+                                          SizedBox(height: 6.h),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Obx(() => TextButton(
+                                              onPressed: controller.isLoading.value
+                                                  ? null
+                                                  : () => controller.resendOtp(context),
+                                              child: Text(
+                                                "Resend OTP",
+                                                style: TextStyle(
+                                                  color: AppColors.primary,
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                            ],
+                                            )),
                                           ),
-                                        ),
-                                        SizedBox(height: 15.h),
-                                        CustomTextField(
-                                          controller: controller.otpController,
-                                          hintText: "enter_6_digit_otp".tr,
-                                          prefixIcon: Icons.password_rounded,
-                                          keyboardType: TextInputType.number,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return "enter_otp".tr;
-                                            }
-                                            if (value.trim().length != 6) {
-                                              return "enter_otp".tr;
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                        SizedBox(height: 10.h),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: TextButton(
-                                            onPressed: () =>
-                                                controller.resendOtp(context),
-                                            style: TextButton.styleFrom(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 10.w,
-                                              ),
-                                              minimumSize: Size.zero,
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                            ),
-                                            child: SmartText(
-                                              title: "resend_otp".tr,
-                                              color: AppColors.primary,
-                                              fontWeight: FontWeight.w600,
-                                              size: 13.sp,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10.h),
-                                      ],
-                                    );
-                                  }
-                                  return const SizedBox.shrink();
-                                }),
+                                          SizedBox(height: 4.h),
+                                        ],
+                                      )
+                                    : const SizedBox.shrink()),
 
-                                // Register/Send OTP Button
+                                // Primary Action Button
                                 Obx(
                                   () => CustomButton(
                                     text: controller.isLoading.value
                                         ? "processing".tr
                                         : controller.showOtpSection.value
-                                        ? "verify_and_register".tr
-                                        : "send_otp".tr,
+                                            ? "verify_and_register".tr
+                                            : "sign_up".tr,
                                     onPressed: () {
                                       if (!controller.isLoading.value) {
                                         if (controller.showOtpSection.value) {
-                                          controller.verifyOtpAndRegister(
-                                            context,
-                                          );
+                                          controller.verifyOtpAndRegister(context);
                                         } else {
                                           controller.sendOtp(context);
                                         }

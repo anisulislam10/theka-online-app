@@ -297,7 +297,7 @@ class _ProviderPhoneLoginState extends State<ProviderPhoneLogin> {
                     child: isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            isOTPSent ? "Verify OTP" : "Send OTP",
+                            isOTPSent ? "verify_otp".tr : "login".tr,
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,

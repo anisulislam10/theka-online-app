@@ -14,6 +14,7 @@ class AdModel {
   final int impressions;
   final bool isActive;
   final String position;
+  final String companyLogo;
 
   AdModel({
     required this.id,
@@ -29,6 +30,7 @@ class AdModel {
     required this.impressions,
     required this.isActive,
     required this.position,
+    required this.companyLogo,
   });
 
   factory AdModel.fromFirestore(DocumentSnapshot doc) {
@@ -47,6 +49,7 @@ class AdModel {
       impressions: data['impressions'] ?? 0,
       isActive: data['isActive'] ?? false,
       position: data['position'] ?? 'mobile',
+      companyLogo: data['companyLogo'] ?? '',
     );
   }
 }
