@@ -91,6 +91,19 @@ class CategorySeeder {
       'Tile Replacement',
       'Tile Polishing'
     ],
+    'Mason': [
+      'Bricklaying',
+      'Stone Masonry',
+      'Cement Masonry',
+      'Wall Masonry',
+      'Floor Masonry',
+      'Brick Repair',
+      'Stone Repair',
+      'Tile Setting',
+      'Tile Work',
+      'Tile Replacement',
+      'Tile Polishing'
+    ]
   };
 
   static final Map<String, List<String>> unskilledCategories = {

@@ -312,8 +312,16 @@
     "ur": "آف لائن"
   },
   "no_requests_available": {
-    "en": "No requests available",
-    "ur": "کوئی درخواست دستیاب نہیں"
+    "en": "No Requests Available",
+    "ur": "فی الحال کوئی درخواست نہیں ہے"
+  },
+  "no_requests_stay_with_us": {
+    "en": "Currently no requests available. Stay here, requests will be available soon.",
+    "ur": "فی الحال کوئی درخواست دستیاب نہیں ہے۔ یہیں رہیں ، درخواستیں جلد دستیاب ہوں گی۔"
+  },
+  "showing_recent_activity": {
+    "en": "Showing recent customer activity nearby",
+    "ur": "قریب میں کسٹمرز کی حالیہ سرگرمی دکھائی جا رہی ہے"
   },
   "need_service": {
     "en": "Need",
@@ -670,6 +678,18 @@
   "verify_otp_continue": {
     "en": "Verify OTP & Continue",
     "ur": "او ٹی پی کی تصدیق کریں اور جاری رکھیں"
+  },
+  "continue_with_facebook": {
+    "en": "Continue with Facebook",
+    "ur": "فیس بک کے ساتھ جاری رکھیں"
+  },
+  "or_login_with": {
+    "en": "Or login with",
+    "ur": "یا اس کے ساتھ لاگ ان کریں"
+  },
+  "or_register_with": {
+    "en": "Or register with",
+    "ur": "یا اس کے ساتھ رجسٹر ہوں"
   },
   "failed_load_categories": {
     "en": "Failed to load categories",
@@ -1354,5 +1374,9 @@
   "about_privacy_point_4": {
     "en": "You control what appears on your profile at any time.",
     "ur": "آپ کا اپنے پروفائل پر مکمل کنٹرول ہے کہ وہاں کیا ظاہر ہو۔"
+  },
+  "live_activity": {
+    "en": "Live Activity",
+    "ur": "لائیو سرگرمی"
   }
 }

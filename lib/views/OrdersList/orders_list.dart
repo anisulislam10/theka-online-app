@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quickserve/core/constants/appColors.dart';
 import 'package:quickserve/core/constants/appTexts.dart';
 import 'controller/order_request_controller.dart';
@@ -9,7 +10,9 @@ import 'package:quickserve/controllers/ad_controller.dart';
 import 'package:quickserve/core/widgets/ad_widget.dart';
 import 'package:quickserve/core/widgets/language_selector.dart';
 import 'dart:async';
+import 'dart:ui';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:intl/intl.dart';
 
 
 class OrdersList extends StatelessWidget {
@@ -198,29 +201,128 @@ class OrdersList extends StatelessWidget {
               final filteredRequests = controller.filteredRequests;
 
               if (filteredRequests.isEmpty) {
-                return ListView(
-                  padding: EdgeInsets.only(top: 10.h, left: 4.w, right: 4.w, bottom: 20.h),
+                return Column(
                   children: [
-                    _buildAdWidget(),
-                    SizedBox(height: 50.h),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.inbox_outlined,
-                            size: 80.sp,
-                            color: Colors.grey[400],
-                          ),
-                          SizedBox(height: 16.h),
-                          SmartText(
-                            title: "no_requests_available".tr,
-                            size: 16.sp,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ],
+                    // Content Area (Market Insights + Activity Feed)
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                        child: Column(
+                          children: [
+                            // 📢 Reassurance Banner
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [AppColors.primary.withOpacity(0.05), AppColors.secondary.withOpacity(0.05)],
+                                ),
+                                borderRadius: BorderRadius.circular(15.r),
+                                border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.info_outline, color: AppColors.primary, size: 20.sp),
+                                  SizedBox(width: 10.w),
+                                  Expanded(
+                                    child: SmartText(
+                                      title: "no_requests_stay_with_us".tr,
+                                      size: 12.sp,
+                                      color: Colors.grey[700],
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(height: 15.h),
+                            
+                            // 👥 Discover Your Next Customer (Hero Section)
+                            _buildCustomerSlider(controller),
+                            
+                            SizedBox(height: 20.h),
+                            
+                            // 📡 Live Activity Feed
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50], // Very light clean grey
+                                  borderRadius: BorderRadius.circular(25.r),
+                                  border: Border.all(color: Colors.white, width: 1.5),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(16.w),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 8.w,
+                                            height: 8.w,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.green,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          SmartText(
+                                            title: "live_activity".tr,
+                                            size: 14.sp,
+                                            color: Colors.grey[800],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          const Spacer(),
+                                          SmartText(
+                                            title: "Market Pulse: Active",
+                                            size: 11.sp,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Obx(() {
+                                        if (controller.recentActivity.isEmpty) {
+                                          return Center(
+                                            child: SmartText(
+                                              title: "Gathering market insights...",
+                                              size: 14.sp,
+                                              color: Colors.grey,
+                                            ),
+                                          );
+                                        }
+                                        return ListView.builder(
+                                          padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 90.h),
+                                          itemCount: controller.recentActivity.length,
+                                          itemBuilder: (context, index) {
+                                            final activity = controller.recentActivity[index];
+                                            return _buildActivityItem(activity);
+                                          },
+                                        );
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                    // Ad Widget as overlay (placed at bottom of screen logic)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 10.h,
+                      child: _buildAdWidget(),
                     ),
                   ],
                 );
@@ -440,6 +542,139 @@ class OrdersList extends StatelessWidget {
 
   Widget _buildAdWidget() {
     return _AdSliderWidget();
+  }
+
+  Widget _buildCustomerSlider(OrdersController controller) {
+    return Obx(() {
+      final customers = controller.recentActivity
+          .where((a) => a['type'] == 'registration' && a['name'] != null)
+          .toList();
+
+      if (customers.isEmpty) return const SizedBox.shrink();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: SmartText(
+              title: "Discover Your Next Customer",
+              size: 13.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 90.h,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: customers.length,
+              itemBuilder: (context, index) {
+                final customer = customers[index];
+                final name = customer['name'] ?? 'User';
+                final photoUrl = customer['profileImage']; // Changed from photoUrl as requested
+
+                return Container(
+                  width: 80.w,
+                  margin: EdgeInsets.only(right: 15.w),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(2.r),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+                        ),
+                        child: CircleAvatar(
+                          radius: 28.r,
+                          backgroundColor: Colors.grey[200],
+                          backgroundImage: photoUrl != null 
+                            ? NetworkImage(photoUrl) 
+                            : null,
+                          child: photoUrl == null 
+                            ? Icon(Icons.person, color: Colors.grey[400], size: 28.sp) 
+                            : null,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      SmartText(
+                        title: name.split(' ')[0], // First name
+                        size: 11.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[800],
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildActivityItem(Map<String, dynamic> activity) {
+    final type = activity['type'] ?? 'registration';
+    final name = activity['name'] ?? 'Customer';
+    final city = activity['city'] ?? 'Nearby';
+    final timestamp = activity['timestamp'] as Timestamp?;
+    final timeStr = timestamp != null 
+        ? DateFormat('hh:mm a').format(timestamp.toDate())
+        : '';
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.white, width: 1),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 15.r,
+            backgroundColor: type == 'system' ? AppColors.secondary.withValues(alpha: 0.1) : AppColors.primary.withValues(alpha: 0.1),
+            child: Icon(
+              type == 'system' ? Icons.info_outline : Icons.person_outline,
+              size: 18.sp,
+              color: type == 'system' ? AppColors.secondary : AppColors.primary,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.black, fontSize: 13.sp),
+                    children: [
+                      TextSpan(text: name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: type == 'system' ? ' ' : ' registered in '),
+                      TextSpan(text: type == 'system' ? (activity['message'] ?? '') : city, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                if (timeStr.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(top: 2.h),
+                    child: SmartText(
+                      title: timeStr,
+                      size: 10.sp,
+                      color: Colors.grey,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

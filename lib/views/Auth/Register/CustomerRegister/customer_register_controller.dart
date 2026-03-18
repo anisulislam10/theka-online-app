@@ -1,12 +1,18 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quickserve/core/constants/appColors.dart';
 import 'package:quickserve/core/services/vt_otp_service.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:quickserve/views/CustomerHome/widgets/home_page.dart';
 import 'dart:io';
 import 'package:quickserve/views/Auth/AuthService/auth_service.dart';
@@ -21,6 +27,11 @@ class CustomerRegisterController extends GetxController {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final otpController = TextEditingController();
+  final addressController = TextEditingController(); // New
+
+  final latitude = 0.0.obs; // New
+  final longitude = 0.0.obs; // New
+  final isFetchingLocation = false.obs; // New
 
   final isLoading = false.obs;
   final selectedCity = ''.obs;
@@ -187,6 +198,41 @@ class CustomerRegisterController extends GetxController {
       profileUrl = await ref.getDownloadURL();
     }
 
+    // Generate password hash using SHA-256
+    final bytes = utf8.encode(passwordController.text.trim());
+    final digest = sha256.convert(bytes);
+    final passwordHash = digest.toString();
+
+    // Get coordinates from precise location OR typed address OR city
+    double? lat = latitude.value != 0.0 ? latitude.value : null;
+    double? lng = longitude.value != 0.0 ? longitude.value : null;
+
+    try {
+      // 1. Try geocoding the typed address if precise coordinates are 0.0
+      if (lat == null && addressController.text.trim().isNotEmpty) {
+        debugPrint("📍 Geocoding typed address: ${addressController.text}");
+        List<Location> locations = await locationFromAddress("${addressController.text}, ${savedCity.value}, Pakistan");
+        if (locations.isNotEmpty) {
+          lat = locations.first.latitude;
+          lng = locations.first.longitude;
+          debugPrint("📍 Geocoded typed address to: $lat, $lng");
+        }
+      }
+
+      // 2. Fallback to geocoding the city if still null
+      if (lat == null && savedCity.value.isNotEmpty) {
+        debugPrint("📍 Precision location not set, geocoding city: ${savedCity.value}");
+        List<Location> locations = await locationFromAddress("${savedCity.value}, Pakistan");
+        if (locations.isNotEmpty) {
+          lat = locations.first.latitude;
+          lng = locations.first.longitude;
+          debugPrint("📍 Geocoded ${savedCity.value} to: $lat, $lng");
+        }
+      }
+    } catch (e) {
+      debugPrint("❌ Geocoding error: $e");
+    }
+
     // Save to Firestore
     Map<String, dynamic> userData = {
       "uid": user.uid,
@@ -195,8 +241,15 @@ class CustomerRegisterController extends GetxController {
       "city": savedCity.value,
       "role": "customer",
       "profileImage": profileUrl,
+      "passwordHash": passwordHash, // Save the hashed password
       "createdAt": FieldValue.serverTimestamp(),
     };
+
+    if (lat != null && lng != null) {
+      userData["latitude"] = lat;
+      userData["longitude"] = lng;
+      userData["address"] = addressController.text; // Save address
+    }
 
     if (savedEmail.value.isNotEmpty) {
       userData["email"] = savedEmail.value;
@@ -212,6 +265,44 @@ class CustomerRegisterController extends GetxController {
     await AuthService.saveRole('customer');
     _showSnackbar("Success", "Account created successfully!");
     Get.offAll(() => HomePage());
+  }
+
+  /// 📍 Get Current Location & Convert to Address
+  Future<void> getCurrentLocation() async {
+    isFetchingLocation.value = true;
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+        final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+
+        latitude.value = position.latitude;
+        longitude.value = position.longitude;
+
+        final placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          final address = "${place.name}, ${place.locality}, ${place.administrativeArea}";
+          addressController.text = address;
+        }
+      } else {
+        Get.snackbar("Permission Denied", "Location permission is required to fetch your position.");
+      }
+    } catch (e) {
+      debugPrint("❌ Error fetching location: $e");
+      Get.snackbar("Error", "Could not fetch location: $e");
+    } finally {
+      isFetchingLocation.value = false;
+    }
   }
 
   // ==================== RESEND OTP ====================
@@ -293,6 +384,72 @@ class CustomerRegisterController extends GetxController {
   }
 
   // ==================== HELPERS ====================
+
+  // ==================== FACEBOOK SIGN-IN FOR CUSTOMER ====================
+  Future<void> signInWithFacebook(BuildContext context) async {
+    if (isLoading.value) return;
+
+    try {
+      isLoading.value = true;
+      debugPrint("🔵 Facebook Sign-In Started for Customer");
+
+      // 1. Trigger Facebook Login
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['public_profile', 'email'],
+      );
+
+      if (result.status == LoginStatus.success) {
+        debugPrint("✅ Facebook Login success");
+
+        // 2. Create a credential
+        final OAuthCredential credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
+
+        // 3. Sign in to Firebase
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        final user = userCredential.user;
+
+        if (user == null) throw Exception("Firebase Facebook Sign-In failed");
+
+        debugPrint("✅ Firebase Facebook Sign-In successful. UID: ${user.uid}");
+
+        // 4. Check if user already exists in Firestore as a Customer
+        final customerDoc = await FirebaseFirestore.instance.collection('Customers').doc(user.uid).get();
+
+        if (customerDoc.exists) {
+          debugPrint("✅ User is existing Customer. Logging in...");
+          await AuthService.saveRole('customer');
+          Get.offAll(() => HomePage());
+        } else {
+          // 5. New user: Create account and navigate to Home
+          debugPrint("🚀 New user from Facebook. Creating Customer record...");
+          
+          await FirebaseFirestore.instance.collection('Customers').doc(user.uid).set({
+            'uid': user.uid,
+            'name': user.displayName ?? "User",
+            'email': user.email ?? "",
+            'phone': user.phoneNumber ?? "",
+            'profileImage': user.photoURL ?? "",
+            'role': 'customer',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+          await AuthService.saveRole('customer');
+          Get.offAll(() => HomePage());
+        }
+      } else if (result.status == LoginStatus.cancelled) {
+        debugPrint("⚪ Facebook Login cancelled");
+      } else {
+        debugPrint("❌ Facebook Login failed: ${result.message}");
+        _showErrorDialog(context, result.message ?? "Facebook login failed");
+      }
+    } catch (e) {
+      debugPrint("❌ Error in Customer Facebook sign-in: ${e.toString()}");
+      _showErrorDialog(context, "Facebook Sign-In failed. Please try again.");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -330,6 +487,7 @@ class CustomerRegisterController extends GetxController {
     phoneController.dispose();
     passwordController.dispose();
     otpController.dispose();
+    addressController.dispose(); // New
     super.onClose();
   }
 }

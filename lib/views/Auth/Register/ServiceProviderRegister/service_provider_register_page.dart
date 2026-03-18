@@ -402,6 +402,58 @@ class ServiceProviderRegisterPage extends StatelessWidget {
                                   },
                                 ),
                               ),
+
+                              SizedBox(height: 20.h),
+
+                              /*
+                              // OR Divider
+                              Row(
+                                children: [
+                                  Expanded(child: Divider(color: Colors.grey[300])),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                    child: Text(
+                                      "or_register_with".tr,
+                                      style: TextStyle(
+                                        color: Colors.grey[500],
+                                        fontSize: 13.sp,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(child: Divider(color: Colors.grey[300])),
+                                ],
+                              ),
+
+                              SizedBox(height: 20.h),
+
+                              // Facebook Button
+                              OutlinedButton(
+                                onPressed: () => controller.signInWithFacebook(context),
+                                style: OutlinedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                                  side: BorderSide(color: Colors.grey[300]!),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                  ),
+                                  backgroundColor: Colors.white,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.facebook, color: const Color(0xFF1877F2), size: 24.sp),
+                                    SizedBox(width: 12.w),
+                                    Text(
+                                      "continue_with_facebook".tr,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              */
                             ],
                           ),
                         ),

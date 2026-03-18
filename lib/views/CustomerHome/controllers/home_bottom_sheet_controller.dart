@@ -112,6 +112,7 @@ class HomeBottomSheetController extends GetxController {
         'AC Services',
         'CCTV Services',
         'Tiles Work',
+        'Mason',
       ];
 
       final unskilledCategoryNames = [
@@ -425,6 +426,8 @@ class HomeBottomSheetController extends GetxController {
         'userRating': double.tryParse(userData['userRating'] ?? '0.0') ?? 0.0,
         'totalRatings': int.tryParse(userData['totalRatings'] ?? '0') ?? 0,
         'requestType': selectedTime.value,
+        'latitude': mapController.currentLocation.value.latitude,
+        'longitude': mapController.currentLocation.value.longitude,
         'createdAt': FieldValue.serverTimestamp(),
         'status': 'pending',
       };

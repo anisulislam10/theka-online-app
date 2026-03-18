@@ -4,7 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
 import '../../BottomNavbar/bottom_navbar.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:quickserve/core/services/notification_service.dart'; // Import NotificationService
+import 'package:geocoding/geocoding.dart';
+
+import 'package:flutter/material.dart'; // Add material for AnimationController
+import '../../../core/constants/appColors.dart';
 
 class OrdersController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -24,6 +29,19 @@ class OrdersController extends GetxController {
 
   // Selected tab (0 = Now, 1 = Anytime)
   RxInt selectedTab = 0.obs;
+  RxString selectedCustomerName = ''.obs; // New for showing name on click
+
+  // Map state for empty orders view
+  RxSet<Marker> activeCustomerMarkers = <Marker>{}.obs;
+  RxSet<Circle> activeCustomerCircles = <Circle>{}.obs; // Keeping for now to avoid breaking UI if not updated yet
+  Rx<LatLng> mapCenter = const LatLng(30.3753, 69.3451).obs; // Center on Pakistan initially
+  final Completer<GoogleMapController> mapController = Completer<GoogleMapController>();
+
+  // New for Market Overview Dashboard
+  RxList<Map<String, dynamic>> recentActivity = <Map<String, dynamic>>[].obs;
+  RxBool isScanning = false.obs;
+  RxInt totalCustomersCount = 0.obs;
+  RxInt activeCustomersCount = 0.obs;
 
   // Provider's service category and details
   RxString providerServiceCategory = ''.obs;
@@ -54,6 +72,8 @@ class OrdersController extends GetxController {
       listenToNowRequests();
       listenToAnytimeRequests();
     }
+    // Fetch activity feed for the empty state
+    fetchActivityFeedData();
   }
 
   /// Fetch current provider's service category and details
@@ -135,7 +155,7 @@ class OrdersController extends GetxController {
           _isFirstLoadNow = false; // Mark initial load as done
 
           for (var doc in snapshot.docs) {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            Map<String, dynamic> data = doc.data();
             data['id'] = doc.id;
             data['requestType'] = 'Now';
 
@@ -205,7 +225,7 @@ class OrdersController extends GetxController {
           _isFirstLoadAnytime = false; // Mark initial load as done
 
           for (var doc in snapshot.docs) {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            Map<String, dynamic> data = doc.data();
             data['id'] = doc.id;
             data['requestType'] = 'Anytime';
 
@@ -395,6 +415,7 @@ class OrdersController extends GetxController {
     await fetchProviderServiceCategory();
     listenToNowRequests();
     listenToAnytimeRequests();
+    fetchActivityFeedData(); // Refresh activity feed
     print('🔄 Refreshed state');
   }
 
@@ -406,6 +427,177 @@ class OrdersController extends GetxController {
   /// Get loading state based on selected tab
   bool get isLoading {
     return selectedTab.value == 0 ? isLoadingNow.value : isLoadingAnytime.value;
+  }
+
+  /// Fetch registered customers to populate the empty map view
+    // This method now also populates the recentActivity feed
+    Future<void> fetchActivityFeedData() async {
+      try {
+        isScanning.value = true;
+        recentActivity.clear();
+
+        final snapshot = await _firestore
+            .collection('Customers')
+            .orderBy('createdAt', descending: true)
+            .limit(20)
+            .get();
+
+        // Also fetch total customer count for "Insights"
+        final totalSnapshot = await _firestore.collection('Customers').count().get();
+        totalCustomersCount.value = totalSnapshot.count ?? 0;
+        // Mock active customers as a percentage of total
+        activeCustomersCount.value = (totalCustomersCount.value * 0.15).toInt() + 5;
+
+        if (snapshot.docs.isEmpty) {
+          isScanning.value = false;
+          return;
+        }
+
+        for (var doc in snapshot.docs) {
+          final data = doc.data();
+          recentActivity.add({
+            'name': data['name'] ?? 'A customer',
+            'city': data['city'] ?? 'Nearby',
+            'timestamp': data['createdAt'] ?? Timestamp.now(),
+            'profileImage': data['profileImage'], // Fetching profileImage as requested
+            'type': 'registration',
+          });
+          // Small delay for "streaming" effect if needed, but not necessary here
+        }
+        
+        // Add some "System" messages for extra life
+        recentActivity.insert(0, {
+          'name': 'System',
+          'city': 'Global',
+          'message': 'Searching for the best opportunities...',
+          'type': 'system',
+        });
+
+        isScanning.value = false;
+      } catch (e) {
+        print('❌ Error fetching activity feed: $e');
+        isScanning.value = false;
+      }
+    }
+
+    Future<void> fetchActiveCustomerLocations() async {
+    try {
+      print('🌍 Firestore: Querying ALL Customers collection (limit 100)...');
+      // TEMPORARILY REMOVED orderBy('latitude') to rule out indexing problems
+      QuerySnapshot customersSnap = await _firestore.collection('Customers')
+          .limit(100) 
+          .get();
+
+      print('📸 Firestore: Fetched ${customersSnap.docs.length} customer documents');
+      
+      activeCustomerMarkers.clear(); // Start fresh
+      LatLng? firstLocation;
+      int geocodeCount = 0;
+      const int maxGeocodes = 20; // Limit fallback geocoding
+      
+      if (customersSnap.docs.isEmpty) {
+        print('⚠️ Firestore: No customers found in collection!');
+      }
+      
+      for (var doc in customersSnap.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        
+        if (data['latitude'] != null && data['longitude'] != null) {
+          final rawLat = data['latitude'];
+          final rawLng = data['longitude'];
+          
+          double? lat;
+          double? lng;
+          
+          if (rawLat is String) lat = double.tryParse(rawLat);
+          else if (rawLat is int) lat = rawLat.toDouble();
+          else if (rawLat is double) lat = rawLat;
+
+          if (rawLng is String) lng = double.tryParse(rawLng);
+          else if (rawLng is int) lng = rawLng.toDouble();
+          else if (rawLng is double) lng = rawLng;
+          
+          if (lat != null && lng != null && lat != 0.0 && lng != 0.0) {
+            LatLng pos = LatLng(lat, lng);
+            
+            final marker = Marker(
+              markerId: MarkerId(doc.id),
+              position: pos,
+              consumeTapEvents: true, // Prevents auto-centering
+              onTap: () async {
+                selectedCustomerName.value = data['name'] ?? 'Customer';
+                // Manually show info window
+                try {
+                  final controller = await mapController.future;
+                  controller.showMarkerInfoWindow(MarkerId(doc.id));
+                } catch (e) {
+                  print('❌ Error showing info window: $e');
+                }
+              },
+              infoWindow: InfoWindow(
+                title: data['name'] ?? 'Customer',
+                snippet: data['address'] ?? data['city'] ?? 'Registered Location',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            );
+
+            activeCustomerMarkers.add(marker);
+            
+            if (firstLocation == null) {
+              firstLocation = pos;
+              print('🎯 UI: First customer found at $firstLocation');
+            }
+          }
+        } else if (data['city'] != null && (data['city'] as String).isNotEmpty && geocodeCount < maxGeocodes) {
+           // FALLBACK: Geocode the city name if coordinates are missing
+           geocodeCount++;
+           try {
+             String cityName = data['city'];
+             List<Location> locations = await locationFromAddress("$cityName, Pakistan");
+             if (locations.isNotEmpty) {
+               LatLng pos = LatLng(locations.first.latitude, locations.first.longitude);
+               
+               final marker = Marker(
+                 markerId: MarkerId(doc.id),
+                 position: pos,
+                 consumeTapEvents: true, // Prevents auto-centering
+                 onTap: () async {
+                   selectedCustomerName.value = data['name'] ?? 'Customer';
+                   try {
+                     final controller = await mapController.future;
+                     controller.showMarkerInfoWindow(MarkerId(doc.id));
+                   } catch (e) {
+                     print('❌ Error showing info window: $e');
+                   }
+                 },
+                 infoWindow: InfoWindow(
+                   title: data['name'] ?? 'Customer',
+                   snippet: cityName,
+                 ),
+                 icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+               );
+
+               activeCustomerMarkers.add(marker);
+               
+               if (firstLocation == null) {
+                 firstLocation = pos;
+               }
+             }
+           } catch (e) {
+             print('❌ Fallback geocoding failed for ${data['name']}: $e');
+           }
+        }
+      }
+
+      print('🚀 UI: Finished loading ${activeCustomerMarkers.length} markers');
+      
+      // We will NO LONGER auto-zoom to the first location. 
+      // The user wants a zoomed-out view of Pakistan.
+      print('✅ Found ${activeCustomerMarkers.length} customer registration locations for the map');
+
+    } catch (e) {
+      print('❌ Error fetching customer registration locations: $e');
+    }
   }
 
   @override

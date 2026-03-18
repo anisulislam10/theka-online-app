@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -496,6 +500,7 @@ class ServiceProviderRegisterController extends GetxController {
         'AC Services',
         'CCTV Services',
         'Tiles Work',
+        'Mason',
       ];
 
       final unskilledCategoryNames = [
@@ -918,6 +923,15 @@ class ServiceProviderRegisterController extends GetxController {
             overallProgress = 0.95;
             updateProgress(overallProgress);
 
+            // Generate password hash using SHA-256
+            String passwordToHash = savedPassword.value.isNotEmpty ? savedPassword.value : passwordController.text.trim();
+            String passwordHash = "";
+            if (passwordToHash.isNotEmpty) {
+              final bytes = utf8.encode(passwordToHash);
+              final digest = sha256.convert(bytes);
+              passwordHash = digest.toString();
+            }
+
             await FirebaseFirestore.instance
                 .collection('ServiceProviders')
                 .doc(userId)
@@ -941,6 +955,7 @@ class ServiceProviderRegisterController extends GetxController {
               'cnicBack': cnicBackUrl,
               'accountStatus': 'pending',
               'reason': '',
+              'passwordHash': passwordHash, // Save the hashed password
               'createdAt': FieldValue.serverTimestamp(),
             });
 
@@ -1015,17 +1030,15 @@ class ServiceProviderRegisterController extends GetxController {
       print("✅ Firebase account created. UID: ${user.uid}");
 
       // Save data for next screen
-      savedName.value = nameController.text.trim();
-      savedEmail.value = dummyEmail; // Use dummy email as primary
+      // Do NOT overwrite savedEmail with dummyEmail so the real email is kept for Firestore
       savedPhone.value = formattedPhone;
-      savedPassword.value = dummyPassword;
 
       print("🚀 Navigating to DocumentsUploadPage...");
       Get.to(() => const DocumentsUploadPage(), arguments: {
         'name': savedName.value,
-        'email': savedEmail.value,
+        'email': savedEmail.value, // Pass real email
         'phone': savedPhone.value,
-        'password': savedPassword.value,
+        'password': savedPassword.value, // Pass real password block directly
         'city': selectedCity.value,
       });
 
@@ -1085,6 +1098,72 @@ class ServiceProviderRegisterController extends GetxController {
         ],
       ),
     );
+  }
+
+  // ==================== FACEBOOK SIGN-IN FOR SERVICE PROVIDER ====================
+  Future<void> signInWithFacebook(BuildContext context) async {
+    if (isLoading.value) {
+      debugPrint("⚠️ Already signing in, ignoring duplicate tap");
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      debugPrint("🔵 Facebook Sign-In Started for Service Provider");
+
+      // 1. Trigger Facebook Login
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['public_profile', 'email'],
+      );
+
+      if (result.status == LoginStatus.success) {
+        debugPrint("✅ Facebook Login success");
+
+        // 2. Create a credential
+        final OAuthCredential credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
+
+        // 3. Sign in to Firebase
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        final user = userCredential.user;
+
+        if (user == null) throw Exception("Firebase Facebook Sign-In failed");
+
+        debugPrint("✅ Firebase Facebook Sign-In successful. UID: ${user.uid}");
+
+        // 4. Check if user already exists in Firestore as a Service Provider
+        final providerDoc = await FirebaseFirestore.instance.collection('ServiceProviders').doc(user.uid).get();
+
+        if (providerDoc.exists) {
+          debugPrint("✅ User is existing Service Provider. Logging in...");
+          await AuthService.saveRole('ServiceProvider');
+          Get.offAll(() => const BottomNavbar());
+        } else {
+          // 5. New user: Navigate to Documents upload with info pre-filled
+          debugPrint("🚀 New user from Facebook. Navigating to DocumentsUploadPage...");
+          
+          savedName.value = user.displayName ?? "";
+          savedEmail.value = user.email ?? "";
+          currentUserPhotoUrl.value = user.photoURL ?? "";
+
+          Get.to(() => const DocumentsUploadPage(), arguments: {
+            'name': savedName.value,
+            'email': savedEmail.value,
+            'photoUrl': currentUserPhotoUrl.value,
+            'isSocialLogin': true,
+          });
+        }
+      } else if (result.status == LoginStatus.cancelled) {
+        debugPrint("⚪ Facebook Login cancelled");
+      } else {
+        debugPrint("❌ Facebook Login failed: ${result.message}");
+        _showErrorDialog(context, result.message ?? "Facebook login failed");
+      }
+    } catch (e) {
+      debugPrint("❌ Error in SP Facebook sign-in: ${e.toString()}");
+      _showErrorDialog(context, "Facebook Sign-In failed. Please try again.");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // ==================== SERVICE PROVIDER REGISTRATION WITH OTP ====================
@@ -1217,15 +1296,14 @@ class ServiceProviderRegisterController extends GetxController {
 
       print("✅ Firebase account created. UID: ${user.uid}");
 
-      savedEmail.value = dummyEmail; 
-      savedPassword.value = dummyPassword;
+      // Do NOT overwrite savedEmail.value = dummyEmail; 
 
       print("🚀 Navigating to DocumentsUploadPage...");
       Get.to(() => const DocumentsUploadPage(), arguments: {
         'name': savedName.value,
-        'email': savedEmail.value,
+        'email': savedEmail.value, // Passed to next step
         'phone': savedPhone.value,
-        'password': savedPassword.value,
+        'password': savedPassword.value, 
         'city': selectedCity.value,
       });
 
@@ -1241,14 +1319,12 @@ class ServiceProviderRegisterController extends GetxController {
           if (user == null) throw Exception("Login failed");
           
           print("✅ Firebase account signed in. UID: ${user.uid}");
-          
-          savedEmail.value = dummyEmail; 
-          savedPassword.value = dummyPassword;
+          // Do NOT overwrite savedEmail with dummyEmail here either
 
           print("🚀 Navigating to DocumentsUploadPage...");
           Get.to(() => const DocumentsUploadPage(), arguments: {
             'name': savedName.value,
-            'email': savedEmail.value,
+            'email': savedEmail.value, // keeping real email
             'phone': savedPhone.value,
             'password': savedPassword.value,
             'city': selectedCity.value,

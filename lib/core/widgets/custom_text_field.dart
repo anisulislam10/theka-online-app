@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool enabled;
   final int? maxLength;
+  final Widget? suffixIcon; // New
 
   const CustomTextField({
     super.key,
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
     this.validator,
     this.enabled = true,
     this.maxLength,
+    this.suffixIcon, // New
   });
 
   @override
@@ -59,7 +61,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         fillColor: Colors.grey.shade100,
 
         // ✅ Password visibility toggle
-        suffixIcon: widget.obscureText
+        suffixIcon: widget.suffixIcon ?? (widget.obscureText
             ? IconButton(
                 icon: Icon(
                   _isObscured ? Icons.visibility_off : Icons.visibility,
@@ -71,7 +73,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   });
                 },
               )
-            : null,
+            : null),
 
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),

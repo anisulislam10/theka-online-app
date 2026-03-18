@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quickserve/core/constants/appColors.dart';
@@ -36,8 +40,8 @@ class LoginController extends GetxController {
   }
 
   // ==================== PHONE LOGIN WITH VT OTP ====================
-  Future<void> sendLoginOtp(BuildContext context) async {
-    debugPrint("==================== SEND LOGIN OTP STARTED ====================");
+  Future<void> loginWithPhone(BuildContext context) async {
+    debugPrint("==================== PHONE LOGIN STARTED ====================");
 
     if (formKey.currentState == null || !formKey.currentState!.validate()) return;
 
@@ -54,73 +58,19 @@ class LoginController extends GetxController {
         return;
       }
 
-      debugPrint("📤 Sending OTP via VeevoTech to: $formattedPhone");
-      final result = await VtOtpService.instance.sendOtp(formattedPhone);
-
-      if (result.isSuccess) {
-        showOtpSection.value = true;
-        _showSnackbar("Success", "OTP sent to $formattedPhone");
-      } else {
-        _showSnackbar("Error", result.errorMessage ?? "Failed to send OTP", isError: true);
-      }
+      debugPrint("✅ User registered. Proceeding to direct login...");
+      await _signInWithDummyCredentials(context);
+      
     } catch (e) {
-      debugPrint("❌ Error in sendLoginOtp: ${e.toString()}");
-      _showSnackbar("Error", "Failed to send OTP", isError: true);
-    } finally {
-      isLoading.value = false;
-    }
-
-    debugPrint("==================== SEND LOGIN OTP ENDED ====================\n");
-  }
-
-  Future<void> verifyOtpAndLogin(BuildContext context) async {
-    debugPrint("==================== VERIFY OTP AND LOGIN STARTED ====================");
-
-    final otp = otpController.text.trim();
-    if (otp.isEmpty) {
-      _showSnackbar("Error", "Please enter the OTP", isError: true);
-      return;
-    }
-
-    try {
-      isLoading.value = true;
-      String formattedPhone = "+92${phoneController.text.trim()}";
-
-      final verifyResult = VtOtpService.instance.verifyOtp(formattedPhone, otp);
-
-      switch (verifyResult) {
-        case VtOtpVerifyResult.valid:
-          debugPrint("✅ OTP verified. Signing in...");
-          await _signInWithDummyCredentials(context);
-          break;
-        case VtOtpVerifyResult.invalid:
-          _showSnackbar("Error", "Invalid OTP. Please check and try again.", isError: true);
-          break;
-        case VtOtpVerifyResult.expired:
-          showOtpSection.value = false;
-          otpController.clear();
-          _showSnackbar("Error", "OTP expired. Please request a new one.", isError: true);
-          break;
-        case VtOtpVerifyResult.notFound:
-          _showSnackbar("Error", "No OTP found. Please send OTP first.", isError: true);
-          break;
-      }
-    } catch (e) {
-      debugPrint("❌ Error in verifyOtpAndLogin: ${e.toString()}");
+      debugPrint("❌ Error in loginWithPhone: ${e.toString()}");
       _showSnackbar("Error", "Login failed. Please try again.", isError: true);
     } finally {
       isLoading.value = false;
     }
 
-    debugPrint("==================== VERIFY OTP AND LOGIN ENDED ====================\n");
+    debugPrint("==================== PHONE LOGIN ENDED ====================\n");
   }
 
-  Future<void> resendLoginOtp(BuildContext context) async {
-    debugPrint("🔄 Resending login OTP...");
-    otpController.clear();
-    showOtpSection.value = false;
-    await sendLoginOtp(context);
-  }
 
   /// Signs in using the dummy email/password pattern (keeps existing Firebase auth session).
   Future<void> _signInWithDummyCredentials(BuildContext context) async {
@@ -167,73 +117,225 @@ class LoginController extends GetxController {
 
     try {
       isLoading.value = true;
-      debugPrint("⏳ Attempting email login for: ${emailController.text.trim()}");
+      String enteredEmail = emailController.text.trim();
+      String enteredPassword = passwordController.text.trim();
+      debugPrint("⏳ Attempting custom email login for: $enteredEmail");
 
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+      // 1. Hash the entered password 
+      final bytes = utf8.encode(enteredPassword);
+      final digest = sha256.convert(bytes);
+      final enteredPasswordHash = digest.toString();
+
+      // 2. Query Firestore for the user 
+      QuerySnapshot customerQuery = await FirebaseFirestore.instance
+          .collection('Customers')
+          .where('email', isEqualTo: enteredEmail)
+          .limit(1)
+          .get();
+
+      DocumentSnapshot? userDoc;
+      if (customerQuery.docs.isNotEmpty) {
+        userDoc = customerQuery.docs.first;
+      } else {
+        // Try Service Providers
+        QuerySnapshot providerQuery = await FirebaseFirestore.instance
+            .collection('ServiceProviders')
+            .where('email', isEqualTo: enteredEmail)
+            .limit(1)
+            .get();
+        if (providerQuery.docs.isNotEmpty) {
+          userDoc = providerQuery.docs.first;
+        }
+      }
+
+      // 3. Check if user exists
+      if (userDoc == null || !userDoc.exists) {
+        _showSnackbar("error_title".tr, "user_not_found_error".tr, isError: true);
+        return;
+      }
+
+      // 4. Verify password hash
+      final data = userDoc.data() as Map<String, dynamic>;
+      final storedHash = data['passwordHash'] as String?;
+      
+      if (storedHash == null || storedHash != enteredPasswordHash) {
+        _showSnackbar("error_title".tr, "wrong_password_error".tr, isError: true);
+        return;
+      }
+
+      // 5. User authenticated! Sign into Firebase using their dummy phone credentials
+      String rawPhone = (data['phone'] as String).replaceAll('+92', '');
+      String dummyEmail = "user_$rawPhone@thekaonline.pk";
+      String dummyPassword = "pw_${rawPhone}_stable";
+
+      debugPrint("✅ Password verified! Signing into dummy Firebase account: $dummyEmail");
+      
+      UserCredential userCredential;
+      try {
+        userCredential = await _auth.signInWithEmailAndPassword(
+          email: dummyEmail,
+          password: dummyPassword,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found' || e.code == 'invalid-credential' || e.code == 'wrong-password') {
+           // Fallback: create the dummy account if it doesn't exist for some reason
+           userCredential = await _auth.createUserWithEmailAndPassword(
+             email: dummyEmail,
+             password: dummyPassword,
+           );
+        } else {
+           rethrow;
+        }
+      }
 
       final user = userCredential.user;
-      if (user == null) throw Exception("Login failed");
+      if (user == null) throw Exception("Dummy Firebase Login failed");
 
-      debugPrint("✅ Email login successful. UID: ${user.uid}");
+      // 6. Complete login process
+      debugPrint("✅ Firebase sign-in successful. UID: ${user.uid}");
+      await _ensureUserDocumentExists(user.uid, data['phone']);
       await _checkUserTypeAndNavigate(user.uid);
 
-    } on FirebaseAuthException catch (e) {
-      debugPrint("❌ FirebaseAuthException: ${e.code}");
-
-      String errorMessage;
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = "user_not_found_error".tr;
-          break;
-        case 'wrong-password':
-          errorMessage = "wrong_password_error".tr;
-          break;
-        case 'invalid-email':
-          errorMessage = "invalid_email_error".tr;
-          break;
-        case 'user-disabled':
-          errorMessage = "user_disabled_error".tr;
-          break;
-        case 'too-many-requests':
-          errorMessage = "too_many_requests_error".tr;
-          break;
-        case 'invalid-credential':
-          errorMessage = "invalid_credential_error".tr;
-          break;
-        default:
-          errorMessage = "${'login_failed_error'.tr}: ${e.message}";
-      }
-
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("error_title".tr,
-                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-            content: Text(errorMessage),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            backgroundColor: Colors.white,
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK",
-                    style: TextStyle(color: AppColors.red, fontWeight: FontWeight.bold)),
-              ),
-            ],
-          ),
-        );
-      }
     } catch (e) {
-      debugPrint("❌ Error: ${e.toString()}");
+      debugPrint("❌ Error in loginWithEmail: ${e.toString()}");
       _showSnackbar("error_title".tr, e.toString(), isError: true);
     } finally {
       isLoading.value = false;
     }
 
     debugPrint("==================== EMAIL LOGIN ENDED ====================\n");
+  }
+
+
+  // ==================== FACEBOOK LOGIN ====================
+  Future<void> signInWithFacebook(BuildContext context) async {
+    debugPrint("==================== FACEBOOK SIGN-IN STARTED ====================");
+
+    if (isLoading.value) return;
+
+    try {
+      isLoading.value = true;
+
+      // 1. Trigger Facebook Login
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['public_profile', 'email'],
+      );
+
+      if (result.status == LoginStatus.success) {
+        debugPrint("✅ Facebook Login success. Token: ${result.accessToken?.tokenString.substring(0, 10)}...");
+
+        // 2. Create a credential from the access token
+        final OAuthCredential credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
+
+        // 3. Sign in to Firebase with the credential
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        final user = userCredential.user;
+
+        if (user == null) throw Exception("Firebase Facebook Sign-In failed");
+
+        debugPrint("✅ Firebase Facebook Sign-In successful. UID: ${user.uid}");
+
+        // 4. Check if user exists in Firestore
+        final customerDoc = await FirebaseFirestore.instance.collection('Customers').doc(user.uid).get();
+        final providerDoc = await FirebaseFirestore.instance.collection('ServiceProviders').doc(user.uid).get();
+
+        if (customerDoc.exists) {
+          debugPrint("✅ User is existing Customer");
+          await AuthService.saveRole('customer');
+          Get.offAll(() => HomePage());
+        } else if (providerDoc.exists) {
+          debugPrint("✅ User is existing Service Provider");
+          await AuthService.saveRole('ServiceProvider');
+          Get.offAll(() => BottomNavbar());
+        } else {
+          // 5. New user: Ask for role
+          debugPrint("❓ New user detected. Showing role selection...");
+          _showRoleSelectionDialog(context, user);
+        }
+      } else if (result.status == LoginStatus.cancelled) {
+        debugPrint("⚪ Facebook Login cancelled by user");
+      } else {
+        debugPrint("❌ Facebook Login failed: ${result.message}");
+        _showSnackbar("Error", result.message ?? "Facebook Login failed", isError: true);
+      }
+    } catch (e) {
+      debugPrint("❌ Error in signInWithFacebook: ${e.toString()}");
+      _showSnackbar("Error", "Facebook Login failed. Please try again.", isError: true);
+    } finally {
+      isLoading.value = false;
+    }
+
+    debugPrint("==================== FACEBOOK SIGN-IN ENDED ====================\n");
+  }
+
+  void _showRoleSelectionDialog(BuildContext context, User user) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text("Complete Registration"),
+        content: const Text("How would you like to use Theka Online?"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await _registerFacebookUserAsCustomer(user);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            child: const Text("As Customer", style: TextStyle(color: Colors.white)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // For provider, we need to collect docs. Navigate to documents page.
+              _navigateFacebookProviderToDocs(user);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.secondary),
+            child: const Text("As Provider", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _registerFacebookUserAsCustomer(User user) async {
+    try {
+      isLoading.value = true;
+      debugPrint("🚀 Registering new Facebook user as Customer...");
+
+      await FirebaseFirestore.instance.collection('Customers').doc(user.uid).set({
+        'uid': user.uid,
+        'name': user.displayName ?? "User",
+        'email': user.email ?? "",
+        'phone': user.phoneNumber ?? "",
+        'profileImage': user.photoURL ?? "",
+        'role': 'customer',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      await AuthService.saveRole('customer');
+      Get.offAll(() => HomePage());
+      _showSnackbar("Welcome!", "Your account has been created.");
+    } catch (e) {
+      debugPrint("❌ Error registering customer: $e");
+      _showSnackbar("Error", "Failed to complete registration.", isError: true);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _navigateFacebookProviderToDocs(User user) {
+    debugPrint("🚀 Navigating Facebook Provider to DocumentsUploadPage...");
+    
+    // We navigate to the Service Provider Registration's Documents page
+    // We need to pass the basic info we already have from Facebook
+    Get.toNamed('/ServiceProviderDocs', arguments: {
+      'name': user.displayName ?? "",
+      'email': user.email ?? "",
+      'photoUrl': user.photoURL ?? "",
+      'isSocialLogin': true,
+    });
   }
 
   // ==================== HELPERS ====================
