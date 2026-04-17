@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Theka Online</string>
+    <string name="facebook_app_id">Y1742074219925439</string>
+    <string name="fb_login_protocol_scheme">fb788190687701722</string>
+    <string name="facebook_client_token">1742074219925439</string>
+</resources>
+ 

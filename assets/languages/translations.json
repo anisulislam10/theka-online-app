@@ -1,0 +1,1458 @@
+{
+  "continue_as_guest": {
+    "en": "Continue as Guest",
+    "ur": "بطور مہمان جاری رکھیں"
+  },
+  "guest_mode": {
+    "en": "Guest Mode",
+    "ur": "مہمان وضع"
+  },
+  "please_login_to_request": {
+    "en": "Please login to request a service provider",
+    "ur": "براہ کرم سروس فراہم کنندہ کی درخواست کے لئے لاگ ان کریں"
+  },
+  "request_a_service": {
+    "en": "Request a Service",
+    "ur": "سروس کی درخواست کریں"
+  },
+  "exit_app": {
+    "en": "Exit App",
+    "ur": "ایپ سے باہر نکلیں"
+  },
+  "are_you_sure_you_want_to_exit?": {
+    "en": "Are you sure you want to exit?",
+    "ur": "کیا آپ واقعی باہر نکلنا چاہتے ہیں؟"
+  },
+  "yes": {
+    "en": "Yes",
+    "ur": "ہاں"
+  },
+  "no": {
+    "en": "No",
+    "ur": "نہیں"
+  },
+  "service_type": {
+    "en": "Service Type *",
+    "ur": "سروس کی قسم *"
+  },
+  "skilled": {
+    "en": "Skilled",
+    "ur": "ماہر"
+  },
+  "unskilled": {
+    "en": "Unskilled",
+    "ur": "غیر ماہر"
+  },
+  "select_service": {
+    "en": "Select Service *",
+    "ur": "سروس منتخب کریں *"
+  },
+  "select_a_service": {
+    "en": "Select a service",
+    "ur": "سروس منتخب کریں"
+  },
+  "select_subcategory": {
+    "en": "Select Subcategory",
+    "ur": "سب کیٹیگری منتخب کریں"
+  },
+  "description_optional": {
+    "en": "Description (Optional)",
+    "ur": "تفصیل (اختیاری)"
+  },
+  "describe_service": {
+    "en": "Describe your service requirements in detail...",
+    "ur": "اپنی سروس کی ضروریات کی تفصیل بیان کریں..."
+  },
+  "price_offer": {
+    "en": "Your Price Offer *",
+    "ur": "آپ کی قیمت کی پیشکش *"
+  },
+  "enter_price": {
+    "en": "Enter your price (PKR)",
+    "ur": "اپنی قیمت درج کریں (PKR)"
+  },
+  "rs_prefix": {
+    "en": "Rs :",
+    "ur": "روپے :"
+  },
+  "when_needed": {
+    "en": "When do you need it? *",
+    "ur": "آپ کو کب ضرورت ہے؟ *"
+  },
+  "now": {
+    "en": "Now",
+    "ur": "ابھی"
+  },
+  "anytime": {
+    "en": "Anytime",
+    "ur": "کسی بھی وقت"
+  },
+  "upload_image": {
+    "en": "Upload Image",
+    "ur": "تصویر اپ لوڈ کریں"
+  },
+  "upload_photo_of_issue": {
+    "en": "Upload photo of issue",
+    "ur": "مسئلے کی تصویر اپ لوڈ کریں"
+  },
+  "where_service_needed": {
+    "en": "Where do you need service?",
+    "ur": "آپ کو سروس کہاں چاہیے؟"
+  },
+  "search_location": {
+    "en": "Search location...",
+    "ur": "مقام تلاش کریں..."
+  },
+  "find_professional": {
+    "en": "Find Service Provider",
+    "ur": "سروس فراہم کنندہ تلاش کریں"
+  },
+  "finding_professional": {
+    "en": "Finding Service Provider",
+    "ur": "سروس فراہم کنندہ تلاش کیا جا رہا ہے"
+  },
+  "finding_professional_hint": {
+    "en": "Searching for nearby service providers...",
+    "ur": "قریبی سروس فراہم کرنے والوں کو تلاش کیا جا رہا ہے..."
+  },
+  "no_professional_found": {
+    "en": "No Service Provider Found",
+    "ur": "کوئی سروس فراہم کنندہ نہیں ملا"
+  },
+  "please_login": {
+    "en": "Please Login",
+    "ur": "براہ کرم لاگ ان کریں"
+  },
+  "welcome": {
+    "en": "Welcome",
+    "ur": "خوش آمدید"
+  },
+  "no_skills_available": {
+    "en": "No skills available",
+    "ur": "کوئی ہنر دستیاب نہیں"
+  },
+  "requests": {
+    "en": "Requests",
+    "ur": "درخواستیں"
+  },
+  "delete_account": {
+    "en": "Delete Account",
+    "ur": "اکاؤنٹ حذف کریں"
+  },
+  "complete_profile": {
+    "en": "Complete Profile",
+    "ur": "پروفائل مکمل کریں"
+  },
+  "logout": {
+    "en": "Logout",
+    "ur": "لاگ آؤٹ"
+  },
+  "terms_and_conditions": {
+    "en": "Terms and Conditions",
+    "ur": "شرائط و ضوابط"
+  },
+  "about": {
+    "en": "About",
+    "ur": "ہمارے بارے میں"
+  },
+  "share_app": {
+    "en": "Share App",
+    "ur": "ایپ شیئر کریں"
+  },
+  "rate_on_playstore": {
+    "en": "Rate on Playstore",
+    "ur": "پلے اسٹور پر ریٹ کریں"
+  },
+  "confirm_logout": {
+    "en": "Confirm Logout",
+    "ur": "لاگ آؤٹ کی تصدیق کریں"
+  },
+  "update_required": {
+    "en": "Update Required",
+    "ur": "اپ ڈیٹ ضروری ہے"
+  },
+  "please_update_app_message": {
+    "en": "A new version of the app is available. Please update to continue using the service.",
+    "ur": "ایپ کا نیا ورژن دستیاب ہے۔ براہ کرم سروس کا استعمال جاری رکھنے کے لیے اپ ڈیٹ کریں۔"
+  },
+  "update_now": {
+    "en": "Update Now",
+    "ur": "ابھی اپ ڈیٹ کریں"
+  },
+  "are_you_sure_you_want_to_logout?": {
+    "en": "Are you sure you want to logout?",
+    "ur": "کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟"
+  },
+  "delete": {
+    "en": "Delete",
+    "ur": "حذف کریں"
+  },
+  "cancel": {
+    "en": "Cancel",
+    "ur": "منسوخ کریں"
+  },
+  "logout_failed": {
+    "en": "Logout Failed",
+    "ur": "لاگ آؤٹ ناکام"
+  },
+  "something_went_wrong_while_logging_out": {
+    "en": "Something went wrong while logging out.",
+    "ur": "لاگ آؤٹ کے دوران کچھ غلط ہو گیا۔"
+  },
+  "this_action_will_permanently_delete_your_account_and_all_data": {
+    "en": "This action will permanently delete your account and all data",
+    "ur": "یہ کارروائی آپ کا اکاؤنٹ اور تمام ڈیٹا مستقل طور پر حذف کر دے گی"
+  },
+  "completed_requests": {
+    "en": "Completed Requests",
+    "ur": "مکمل شدہ درخواستیں"
+  },
+  "no_completed_requests_yet": {
+    "en": "No completed requests yet",
+    "ur": "ابھی تک کوئی مکمل شدہ درخواست نہیں ہے"
+  },
+  "accepted_requests_here": {
+    "en": "Accepted requests will appear here",
+    "ur": "قبول شدہ درخواستیں یہاں دکھائی جائیں گی"
+  },
+  "your_completed_service_requests_will_appear_here": {
+    "en": "Your completed service requests will appear here",
+    "ur": "آپ کی مکمل شدہ سروس کی درخواستیں یہاں ظاہر ہوں گی"
+  },
+  "sign_in_with_google": {
+    "en": "Sign in with Google",
+    "ur": "گوگل کے ساتھ سائن ان کریں"
+  },
+  "service_provider": {
+    "en": "Service Provider",
+    "ur": "سروس فراہم کنندہ"
+  },
+  "service": {
+    "en": "Service",
+    "ur": "سروس"
+  },
+  "location_not_specified": {
+    "en": "Location not specified",
+    "ur": "مقام مقرر نہیں کیا گیا"
+  },
+  "no_description": {
+    "en": "No description",
+    "ur": "کوئی تفصیل نہیں"
+  },
+  "accepted": {
+    "en": "Accepted",
+    "ur": "قبول شدہ"
+  },
+  "request_details": {
+    "en": "Request Details",
+    "ur": "درخواست کی تفصیلات"
+  },
+  "request_image": {
+    "en": "Request Image",
+    "ur": "درخواست کی تصویر"
+  },
+  "service_completed": {
+    "en": "Service Completed",
+    "ur": "سروس مکمل ہو گئی"
+  },
+  "completed_on": {
+    "en": "Completed on",
+    "ur": "مکمل شدہ تاریخ"
+  },
+  "your_rating": {
+    "en": "Your Rating",
+    "ur": "آپ کی درجہ بندی"
+  },
+  "review": {
+    "en": "Review",
+    "ur": "جائزہ"
+  },
+  "rate_service_provider": {
+    "en": "Rate Service Provider",
+    "ur": "سروس فراہم کنندہ کی درجہ بندی کریں"
+  },
+  "how_was_your_experience": {
+    "en": "How was your experience with",
+    "ur": "آپ کا تجربہ کیسا رہا"
+  },
+  "add_a_review_optional": {
+    "en": "Add a review (optional)",
+    "ur": "جائزہ شامل کریں (اختیاری)"
+  },
+  "share_your_experience": {
+    "en": "Share your experience...",
+    "ur": "اپنا تجربہ شیئر کریں..."
+  },
+  "submit_rating": {
+    "en": "Submit Rating",
+    "ur": "درجہ بندی جمع کروائیں"
+  },
+  "required": {
+    "en": "Required",
+    "ur": "ضروری"
+  },
+  "please_select_a_rating": {
+    "en": "Please select a rating",
+    "ur": "براہ کرم درجہ بندی منتخب کریں"
+  },
+  "close": {
+    "en": "Close",
+    "ur": "بند کریں"
+  },
+  "subcategory": {
+    "en": "Subcategory",
+    "ur": "ذیلی زمرہ"
+  },
+  "request_type": {
+    "en": "Request Type",
+    "ur": "درخواست کی قسم"
+  },
+  "description": {
+    "en": "Description",
+    "ur": "تفصیل"
+  },
+  "location": {
+    "en": "Location",
+    "ur": "مقام"
+  },
+  "are_you_sure_you_want_to_exit": {
+    "en": "Are you sure you want to exit?",
+    "ur": "کیا آپ واقعی باہر نکلنا چاہتے ہیں؟"
+  },
+  "login_as_customer": {
+    "en": "Login as Customer",
+    "ur": "صارف لاگ اِن"
+  },
+  "login_as_service_provider": {
+    "en": "Login as Service Provider",
+    "ur": "سروس پرووائیڈر لاگ اِن"
+  },
+  "online": {
+    "en": "Online",
+    "ur": "آن لائن"
+  },
+  "offline": {
+    "en": "Offline",
+    "ur": "آف لائن"
+  },
+  "no_requests_available": {
+    "en": "No Requests Available",
+    "ur": "فی الحال کوئی درخواست نہیں ہے"
+  },
+  "no_requests_stay_with_us": {
+    "en": "Currently no requests available. Stay here, requests will be available soon.",
+    "ur": "فی الحال کوئی درخواست دستیاب نہیں ہے۔ یہیں رہیں ، درخواستیں جلد دستیاب ہوں گی۔"
+  },
+  "showing_recent_activity": {
+    "en": "Showing recent customer activity nearby",
+    "ur": "قریب میں کسٹمرز کی حالیہ سرگرمی دکھائی جا رہی ہے"
+  },
+  "need_service": {
+    "en": "Need",
+    "ur": "ضرورت"
+  },
+  "general": {
+    "en": "General",
+    "ur": "عمومی"
+  },
+  "now_request_type": {
+    "en": "Now",
+    "ur": "اب"
+  },
+  "anytime_request_type": {
+    "en": "Anytime",
+    "ur": "کسی بھی وقت"
+  },
+  "you_are_offline": {
+    "en": "You're Offline",
+    "ur": "آپ آف لائن ہیں"
+  },
+  "go_online_to_view_orders": {
+    "en": "Please go online to view order details",
+    "ur": "براہ کرم آرڈر کی تفصیلات دیکھنے کے لیے آن لائن جائیں"
+  },
+  "snackbar_offline_title": {
+    "en": "You're Offline",
+    "ur": "آپ آف لائن ہیں"
+  },
+  "snackbar_offline_message": {
+    "en": "Please go online to view order details",
+    "ur": "براہ کرم آرڈر کی تفصیلات دیکھنے کے لیے آن لائن جائیں"
+  },
+  "exit_app_title": {
+    "en": "Exit App",
+    "ur": "ایپ سے باہر نکلیں"
+  },
+  "exit_app_content": {
+    "en": "Are you sure you want to exit?",
+    "ur": "کیا آپ واقعی ایپ سے باہر نکلنا چاہتے ہیں؟"
+  },
+  "bottom_nav_orders": {
+    "en": "Orders",
+    "ur": "آرڈرز"
+  },
+  "bottom_nav_requests": {
+    "en": "Requests",
+    "ur": "ریکوئسٹس"
+  },
+  "bottom_nav_store": {
+    "en": "Store",
+    "ur": "اسٹور"
+  },
+  "bottom_nav_settings": {
+    "en": "Settings",
+    "ur": "سیٹنگز"
+  },
+  "settings": {
+    "en": "Settings",
+    "ur": "سیٹنگز"
+  },
+  "no_category_selected": {
+    "en": "No Category Selected",
+    "ur": "کوئی زمرہ منتخب نہیں ہوا"
+  },
+  "logout_dialog_title": {
+    "en": "Logout",
+    "ur": "لاگ آؤٹ"
+  },
+  "logout_dialog_content": {
+    "en": "Are you sure you want to logout?",
+    "ur": "کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟"
+  },
+  "edit_profile": {
+    "en": "Edit Profile",
+    "ur": "پروفائل ایڈٹ کریں"
+  },
+  "full_name": {
+    "en": "Full Name",
+    "ur": "پورا نام"
+  },
+  "email": {
+    "en": "Email",
+    "ur": "ای میل"
+  },
+  "phone_hint": {
+    "en": "3123456789",
+    "ur": "3123456789"
+  },
+  "saving": {
+    "en": "Saving...",
+    "ur": "محفوظ کیا جا رہا ہے..."
+  },
+  "save": {
+    "en": "Save",
+    "ur": "محفوظ کریں"
+  },
+  "reviews": {
+    "en": "Reviews",
+    "ur": "جائزے"
+  },
+  "delete_account_warning": {
+    "en": "Are you sure you want to permanently delete your account and all data?",
+    "ur": "کیا آپ واقعی اپنا اکاؤنٹ اور تمام ڈیٹا مستقل طور پر حذف کرنا چاہتے ہیں؟"
+  },
+  "error": {
+    "en": "Error",
+    "ur": "خرابی"
+  },
+  "failed_to_load_profile": {
+    "en": "Failed to load profile",
+    "ur": "پروفائل لوڈ کرنے میں ناکامی"
+  },
+  "take_a_photo": {
+    "en": "Take a Photo",
+    "ur": "تصویر لیں"
+  },
+  "choose_from_gallery": {
+    "en": "Choose from Gallery",
+    "ur": "گیلری سے منتخب کریں"
+  },
+  "image_upload_failed": {
+    "en": "Image upload failed",
+    "ur": "تصویر اپ لوڈ ناکام ہوئی"
+  },
+  "success": {
+    "en": "Success",
+    "ur": "کامیابی"
+  },
+  "profile_updated_successfully": {
+    "en": "Profile updated successfully.",
+    "ur": "پروفائل کامیابی سے اپ ڈیٹ ہو گیا۔"
+  },
+  "failed_to_save_profile": {
+    "en": "Failed to save profile",
+    "ur": "پروفائل محفوظ کرنے میں ناکامی"
+  },
+  "account_deleted": {
+    "en": "Account Deleted",
+    "ur": "اکاؤنٹ حذف ہو گیا"
+  },
+  "account_deleted_message": {
+    "en": "Your account and all associated data have been permanently removed.",
+    "ur": "آپ کا اکاؤنٹ اور اس سے متعلق تمام ڈیٹا مستقل طور پر حذف کر دیا گیا ہے۔"
+  },
+  "reauth_required": {
+    "en": "Re-authentication required",
+    "ur": "دوبارہ تصدیق کی ضرورت ہے"
+  },
+  "reauth_required_message": {
+    "en": "Please log in again before deleting your account.",
+    "ur": "براہ کرم اپنا اکاؤنٹ حذف کرنے سے پہلے دوبارہ لاگ ان کریں۔"
+  },
+  "delete_account_error": {
+    "en": "Error",
+    "ur": "خرابی"
+  },
+  "delete_account_error_message": {
+    "en": "Failed to delete account",
+    "ur": "اکاؤنٹ حذف کرنے میں ناکامی"
+  },
+  "accept_request": {
+    "en": "Accept Request",
+    "ur": "درخواست قبول کریں"
+  },
+  "skip": {
+    "en": "Skip",
+    "ur": "چھوڑ دیں"
+  },
+  "description_label": {
+    "en": "Description",
+    "ur": "تفصیل"
+  },
+  "no_description_provided": {
+    "en": "No description provided",
+    "ur": "کوئی تفصیل فراہم نہیں کی گئی"
+  },
+  "price_label": {
+    "en": "PKR {{price}}",
+    "ur": "PKR {{price}}"
+  },
+  "verification_pending": {
+    "en": "Account Under Verification",
+    "ur": "اکاؤنٹ کی تصدیق جاری ہے"
+  },
+  "verification_pending_message": {
+    "en": "Your account is being reviewed by our team.\nYou will be notified once verification is complete.",
+    "ur": "آپ کا اکاؤنٹ ہماری ٹیم کے ذریعے جائزہ لیا جا رہا ہے۔\nتصدیق مکمل ہونے کے بعد آپ کو اطلاع دی جائے گی۔"
+  },
+  "verification_declined": {
+    "en": "Verification Rejected",
+    "ur": "تصدیق مسترد"
+  },
+  "verification_declined_message": {
+    "en": "Your account verification was declined",
+    "ur": "آپ کا اکاؤنٹ کی تصدیق مسترد کر دی گئی ہے"
+  },
+  "rejection_reason_label": {
+    "en": "Rejection Reason:",
+    "ur": "مسترد کرنے کی وجہ:"
+  },
+  "rate_customer": {
+    "en": "Rate Customer",
+    "ur": "کسٹمر کی درجہ بندی کریں"
+  },
+  "customer": {
+    "en": "Customer",
+    "ur": "کسٹمر"
+  },
+  "request_accepted": {
+    "en": "Request Accepted",
+    "ur": "درخواست منظور شد"
+  },
+  "accepted_by": {
+    "en": "Accepted by",
+    "ur": "قبول کیا گیا"
+  },
+  "profile_settings": {
+    "en": "Profile Settings",
+    "ur": "پروفائل کی ترتیبات"
+  },
+  "profile_updated": {
+    "en": "Profile Updated",
+    "ur": "پروفائل اپ ڈیٹ ہوگئی"
+  },
+  "profile_updated_message": {
+    "en": "Your profile has been saved successfully",
+    "ur": "آپ کی پروفائل کامیابی سے محفوظ ہوگئی ہے"
+  },
+  "save_changes_failed": {
+    "en": "Failed to save changes",
+    "ur": "تبدیلیاں محفوظ کرنے میں ناکامی"
+  },
+  "account_deleted_success": {
+    "en": "Your account and all data have been deleted successfully",
+    "ur": "آپ کا اکاؤنٹ اور تمام ڈیٹا کامیابی کے ساتھ حذف کر دیا گیا ہے"
+  },
+  "failed_to_delete_account": {
+    "en": "Failed to delete account",
+    "ur": "اکاؤنٹ حذف کرنے میں ناکامی"
+  },
+  "email_or_phone": {
+    "en": "Email/Phone Number",
+    "ur": "ای میل/فون نمبر"
+  },
+  "password": {
+    "en": "Password",
+    "ur": "پاس ورڈ"
+  },
+  "login": {
+    "en": "Login",
+    "ur": "لاگ ان"
+  },
+  "logging_in": {
+    "en": "Logging in...",
+    "ur": "لاگ ان ہو رہا ہے..."
+  },
+  "forgot_password": {
+    "en": "Forgot Password",
+    "ur": "پاس ورڈ بھول گئے"
+  },
+  "sign_up": {
+    "en": "Sign Up",
+    "ur": "رجسٹر کریں"
+  },
+  "dont_have_account": {
+    "en": "Don't have an account?",
+    "ur": "اکاؤنٹ نہیں ہے؟"
+  },
+  "sign_in": {
+    "en": "Sign In",
+    "ur": "سائن ان کریں"
+  },
+  "create_account": {
+    "en": "Create your account",
+    "ur": "اپنا اکاؤنٹ بنائیں"
+  },
+  "user_name": {
+    "en": "User Name",
+    "ur": "صارف کا نام"
+  },
+  "phone_number": {
+    "en": "Phone Number",
+    "ur": "فون نمبر"
+  },
+  "enter_otp": {
+    "en": "Enter the 6-digit OTP sent to your phone",
+    "ur": "اپنے فون پر بھیجا گیا 6 ہندسوں والا او ٹی پی درج کریں"
+  },
+  "resend_otp": {
+    "en": "Resend OTP",
+    "ur": "او ٹی پی دوبارہ بھیجیں"
+  },
+  "resend_in": {
+    "en": "Resend in s",
+    "ur": " سیکنڈ میں دوبارہ بھیجیں"
+  },
+  "city": {
+    "en": "City",
+    "ur": "شہر"
+  },
+  "register": {
+    "en": "Register",
+    "ur": "رجسٹر کریں"
+  },
+  "registering": {
+    "en": "Registering...",
+    "ur": "رجسٹر ہو رہا ہے..."
+  },
+  "verify_otp": {
+    "en": "Verify OTP",
+    "ur": "OTP کی تصدیق کریں"
+  },
+  "send_otp": {
+    "en": "Sign Up",
+    "ur": "سائن اپ"
+  },
+  "or": {
+    "en": "Or",
+    "ur": "یا"
+  },
+  "already_have_account": {
+    "en": "Already have an account?",
+    "ur": "پہلے سے اکاؤنٹ ہے؟"
+  },
+  "warning_title": {
+    "en": "Warning",
+    "ur": "انتباہ"
+  },
+  "no_categories_message": {
+    "en": "No service categories found. Please upload categories first.",
+    "ur": "کوئی سروس کیٹیگری نہیں ملی۔ براہ کرم پہلے کیٹیگریز اپلوڈ کریں۔"
+  },
+  "seconds": {
+    "en": "seconds",
+    "ur": "سیکنڈ"
+  },
+  "enter_email_or_phone": {
+    "en": "Please enter your email or phone number",
+    "ur": "براہ کرم اپنا ای میل یا فون نمبر درج کریں"
+  },
+  "enter_password": {
+    "en": "Please enter your password",
+    "ur": "براہ کرم اپنا پاس ورڈ درج کریں"
+  },
+  "password_min_length": {
+    "en": "Password must be at least 6 characters",
+    "ur": "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے"
+  },
+  "processing": {
+    "en": "Processing...",
+    "ur": "عمل جاری ہے..."
+  },
+  "continue": {
+    "en": "Continue",
+    "ur": "جاری رکھیں"
+  },
+  "verify_otp_continue": {
+    "en": "Verify OTP & Continue",
+    "ur": "او ٹی پی کی تصدیق کریں اور جاری رکھیں"
+  },
+  "continue_with_facebook": {
+    "en": "Continue with Facebook",
+    "ur": "فیس بک کے ساتھ جاری رکھیں"
+  },
+  "or_login_with": {
+    "en": "Or login with",
+    "ur": "یا اس کے ساتھ لاگ ان کریں"
+  },
+  "or_register_with": {
+    "en": "Or register with",
+    "ur": "یا اس کے ساتھ رجسٹر ہوں"
+  },
+  "failed_load_categories": {
+    "en": "Failed to load categories",
+    "ur": "کیٹیگریز لوڈ کرنے میں ناکامی ہوئی"
+  },
+  "enter_phone_number": {
+    "en": "Please enter phone number",
+    "ur": "براہ کرم فون نمبر درج کریں"
+  },
+  "send_otp_failed": {
+    "en": "Failed to send OTP",
+    "ur": "OTP بھیجنے میں ناکامی"
+  },
+  "error_title": {
+    "en": "Error",
+    "ur": "خرابی"
+  },
+  "success_title": {
+    "en": "Success",
+    "ur": "کامیابی"
+  },
+  "otp_sent_success": {
+    "en": "OTP sent successfully!",
+    "ur": "OTP کامیابی سے بھیج دیا گیا!"
+  },
+  "enter_name": {
+    "en": "Please enter your name",
+    "ur": "براہ کرم اپنا نام درج کریں"
+  },
+  "enter_email": {
+    "en": "Please enter your email",
+    "ur": "براہ کرم اپنی ای میل درج کریں"
+  },
+  "enter_phone": {
+    "en": "Please enter your phone number",
+    "ur": "براہ کرم اپنا فون نمبر درج کریں"
+  },
+  "select_city": {
+    "en": "Please select a city",
+    "ur": "براہ کرم شہر منتخب کریں"
+  },
+  "password_min_6": {
+    "en": "Password must be at least 6 characters",
+    "ur": "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے"
+  },
+  "select_profile_image": {
+    "en": "Please select a profile image",
+    "ur": "براہ کرم پروفائل تصویر منتخب کریں"
+  },
+  "phone_verified_complete_profile": {
+    "en": "Phone verified! Please complete your profile.",
+    "ur": "فون کی تصدیق ہوگئی! براہ کرم اپنی پروفائل مکمل کریں۔"
+  },
+  "image_selected_successfully": {
+    "en": "Image selected successfully",
+    "ur": "تصویر کامیابی سے منتخب ہو گئی"
+  },
+  "select_service_type": {
+    "en": "Please select a service type (Skilled or Unskilled)",
+    "ur": "براہ کرم سروس کی قسم منتخب کریں (مہارت یافتہ یا غیر مہارت یافتہ)"
+  },
+  "select_service_category": {
+    "en": "Please select a service category",
+    "ur": "براہ کرم سروس کیٹیگری منتخب کریں"
+  },
+  "select_min_3_subcategories": {
+    "en": "Please select at least 3 subcategories",
+    "ur": "براہ کرم کم از کم 3 سب کیٹیگریز منتخب کریں"
+  },
+  "upload_gov_id_front": {
+    "en": "Please upload Government ID Front",
+    "ur": "براہ کرم شناختی کارڈ کے سامنے والا حصہ اپلوڈ کریں"
+  },
+  "upload_gov_id_back": {
+    "en": "Please upload Government ID Back",
+    "ur": "براہ کرم شناختی کارڈ کے پیچھے والا حصہ اپلوڈ کریں"
+  },
+  "auth_failed": {
+    "en": "Authentication failed. Please try registering again.",
+    "ur": "تصدیق ناکام ہوگئی۔ براہ کرم دوبارہ رجسٹر کرنے کی کوشش کریں۔"
+  },
+  "account_submitted": {
+    "en": "Your account with your subcategories has been submitted for verification.",
+    "ur": "آپ کا اکاؤنٹ اور آپ کی ذیلی اقسام تصدیق کے لیے جمع کر دی گئی ہیں۔"
+  },
+  "upload_documents": {
+    "en": "Upload Your Documents",
+    "ur": "اپنے دستاویزات اپ لوڈ کریں"
+  },
+  "select_profession": {
+    "en": "Select Profession",
+    "ur": "پیشہ منتخب کریں"
+  },
+  "select_profession_hint": {
+    "en": "Select a Profession",
+    "ur": "پیشہ منتخب کریں"
+  },
+  "select_skills": {
+    "en": "Select Skills",
+    "ur": "مہارتیں منتخب کریں"
+  },
+  "select_at_least_3_skills": {
+    "en": "Select at least 3 skills. You can select more!",
+    "ur": "کم از کم 3 مہارتیں منتخب کریں۔ آپ مزید بھی منتخب کر سکتے ہیں!"
+  },
+  "government_id_front": {
+    "en": "Government ID Front",
+    "ur": "حکومتی شناختی کارڈ سامنے"
+  },
+  "government_id_back": {
+    "en": "Government ID Back",
+    "ur": "حکومتی شناختی کارڈ پیچھے"
+  },
+  "submit": {
+    "en": "Submit",
+    "ur": "جمع کریں"
+  },
+  "reupload_documents": {
+    "en": "Re-upload Documents",
+    "ur": "دستاویزات دوبارہ اپ لوڈ کریں"
+  },
+  "reupload_cnic_instructions": {
+    "en": "Please upload clear photos of your Government ID front and back and submit for re-verification.",
+    "ur": "برائے کرم اپنے حکومتی شناختی کارڈ کے سامنے اور پیچھے کی واضح تصاویر اپ لوڈ کریں اور دوبارہ تصدیق کے لیے جمع کرائیں۔"
+  },
+  "tap_to_upload": {
+    "en": "Tap to upload",
+    "ur": "اپ لوڈ کرنے کے لیے ٹیپ کریں"
+  },
+  "saving_data": {
+    "en": "Saving Data",
+    "ur": "ڈیٹا محفوظ کیا جا رہا ہے"
+  },
+  "no_professional_found": {
+    "en": "No professional found",
+    "ur": "کوئی پیشہ ور نہیں ملا"
+  },
+  "finding_professional": {
+    "en": "Finding Professional...",
+    "ur": "پیشہ پیدا کرنے کے لیے..."
+  },
+  "please_try_again": {
+    "en": "Please try again",
+    "ur": "براہ کرم دوبارہ کوشش کریں"
+  },
+  "finding_professional_hint": {
+    "en": "Please wait while we connect you with a professional.\\nYou can cancel anytime.",
+    "ur": "براہِ کرم انتظار کریں جب تک ہم آپ کو کسی ماہر سے منسلک کرتے ہیں۔\\nآپ کسی بھی وقت منسوخ کر سکتے ہیں۔"
+  },
+  "continue_as_customer": {
+    "en": "Continue as Customer",
+    "ur": "گاہک کے طور پر جاری رکھیں"
+  },
+  "continue_as_service_provider": {
+    "en": "Continue as Service Provider",
+    "ur": "سروس فراہم کرنے والے کے طور پر جاری رکھیں"
+  },
+  "welcome_to_theka_online": {
+    "en": "Welcome to Theka Online",
+    "ur": "ٹھیکہ آن لائن میں خوش آمدید"
+  },
+  "helper": {
+    "en": "Helper",
+    "ur": "مددگار"
+  },
+  "acceptance_of_terms": {
+    "en": "Acceptance of Terms",
+    "ur": "شرائط کی منظوری"
+  },
+  "acceptance_of_terms_desc": {
+    "en": "By using this app, you agree to comply with and be bound by these terms.",
+    "ur": "اس ایپ کو استعمال کر کے، آپ ان شرائط کی تعمیل کرنے اور ان کے پابند ہونے سے اتفاق کرتے ہیں۔"
+  },
+  "account_data_missing_error": {
+    "en": "Account data is missing. Please contact support.",
+    "ur": "اکاؤنٹ کا ڈیٹا غائب ہے۔ براہ کرم سپورٹ سے رابطہ کریں۔"
+  },
+  "back_to_login": {
+    "en": "Back to Login",
+    "ur": "لاگ ان پر واپس جائیں"
+  },
+  "changes_to_terms": {
+    "en": "Changes to Terms",
+    "ur": "شرائط میں تبدیلیاں"
+  },
+  "changes_to_terms_desc": {
+    "en": "We reserve the right to modify these terms at any time.",
+    "ur": "ہم کسی بھی وقت ان شرائط میں ترمیم کرنے کا حق محفوظ رکھتے ہیں۔"
+  },
+  "choose_registration_method": {
+    "en": "Choose Registration Method",
+    "ur": "رجسٹریشن کا طریقہ منتخب کریں"
+  },
+  "completed": {
+    "en": "Completed",
+    "ur": "مکمل"
+  },
+  "contact_us": {
+    "en": "Contact Us",
+    "ur": "ہم سے رابطہ کریں"
+  },
+  "contact_us_desc": {
+    "en": "For any queries, please reach out to our support team: 03151042240",
+    "ur": "کسی بھی سوالات کے لئے، براہ کرم ہماری سپورٹ ٹیم سے رابطہ کریں: 03151042240"
+  },
+  "could_not_open_sms": {
+    "en": "Could not open SMS app",
+    "ur": "ایس ایم ایس ایپ نہیں کھل سکی"
+  },
+  "create_account_subtitle_provider": {
+    "en": "Fill in the details to start providing services",
+    "ur": "سروسز فراہم کرنا شروع کرنے کے لیے تفصیلات بھریں"
+  },
+  "create_account_title": {
+    "en": "Create Account",
+    "ur": "اکاؤنٹ بنائیں"
+  },
+  "customer_desc": {
+    "en": "Hire professionals for your needs",
+    "ur": "اپنی ضروریات کے لیے پیشہ ور افراد کی خدمات حاصل کریں"
+  },
+  "customer_reg_card": {
+    "en": "Register as Customer",
+    "ur": "بطور گاہک رجسٹر کریں"
+  },
+  "customer_responsibilities": {
+    "en": "Customer Responsibilities",
+    "ur": "گاہک کی ذمہ داریاں"
+  },
+  "customer_responsibilities_desc": {
+    "en": "Customers must provide accurate information and pay for services.",
+    "ur": "گاہکوں کو درست معلومات فراہم کرنی چاہئیں اور سروسز کے لیے ادائیگی کرنی چاہیے۔"
+  },
+  "data_security": {
+    "en": "Data Security",
+    "ur": "ڈیٹا کی حفاظت"
+  },
+  "data_security_desc": {
+    "en": "We take reasonable measures to protect your personal information.",
+    "ur": "ہم آپ کی ذاتی معلومات کی حفاظت کے لیے معقول اقدامات کرتے ہیں۔"
+  },
+  "email_tab": {
+    "en": "Email",
+    "ur": "ای میل"
+  },
+  "enter_6_digit_otp_hint": {
+    "en": "Enter 6-digit code",
+    "ur": "6 ہندسوں کا کوڈ درج کریں"
+  },
+  "failed_to_load_reviews": {
+    "en": "Failed to load reviews",
+    "ur": "جائزے لوڈ کرنے میں ناکامی"
+  },
+  "forgot_password_subtitle": {
+    "en": "Enter your email to receive a reset link",
+    "ur": "ری سیٹ لنک حاصل کرنے کے لیے اپنی ای میل درج کریں"
+  },
+  "general_category": {
+    "en": "General Category",
+    "ur": "عام کیٹیگری"
+  },
+  "get_otp": {
+    "en": "Sign In",
+    "ur": "سائن ان"
+  },
+  "how_we_use_info": {
+    "en": "How We Use Information",
+    "ur": "ہم معلومات کا استعمال کیسے کرتے ہیں"
+  },
+  "how_we_use_info_desc": {
+    "en": "We use your data to provide and improve our services.",
+    "ur": "ہم آپ کا ڈیٹا اپنی خدمات فراہم کرنے اور بہتر بنانے کے لیے استعمال کرتے ہیں۔"
+  },
+  "information_sharing": {
+    "en": "Information Sharing",
+    "ur": "معلومات کا اشتراک"
+  },
+  "information_sharing_desc": {
+    "en": "We do not share your private data with third parties without consent.",
+    "ur": "ہم رضامندی کے بغیر آپ کا نجی ڈیٹا تیسرے فریق کے ساتھ شیئر نہیں کرتے ہیں۔"
+  },
+  "information_we_collect": {
+    "en": "Information We Collect",
+    "ur": "معلومات جو ہم جمع کرتے ہیں"
+  },
+  "information_we_collect_desc": {
+    "en": "We collect information you provide directly to us.",
+    "ur": "ہم وہ معلومات جمع کرتے ہیں جو آپ براہ راست ہمیں فراہم کرتے ہیں۔"
+  },
+  "invalid_credential_error": {
+    "en": "Invalid login credentials",
+    "ur": "غلط لاگ ان معلومات"
+  },
+  "invalid_email": {
+    "en": "Invalid email address",
+    "ur": "غلط ای میل پتہ"
+  },
+  "invalid_email_error": {
+    "en": "Please enter a valid email address",
+    "ur": "براہ کرم درست ای میل پتہ درج کریں"
+  },
+  "join_as_provider": {
+    "en": "Join as Service Provider",
+    "ur": "بطور سروس فراہم کنندہ شامل ہوں"
+  },
+  "join_theka": {
+    "en": "Join Theka Online",
+    "ur": "ٹھیکہ آن لائن میں شامل ہوں"
+  },
+  "login_failed_error": {
+    "en": "Login failed",
+    "ur": "لاگ ان ناکام رہا"
+  },
+  "login_subtitle": {
+    "en": "Sign in to continue",
+    "ur": "جاری رکھنے کے لیے سائن ان کریں"
+  },
+  "need": {
+    "en": "Need",
+    "ur": "ضرورت"
+  },
+  "new_to_theka": {
+    "en": "New to Theka Online?",
+    "ur": "ٹھیکہ آن لائن پر نئے ہیں؟"
+  },
+  "no_reviews_yet": {
+    "en": "No reviews yet",
+    "ur": "ابھی تک کوئی جائزہ نہیں ہے"
+  },
+  "no_services_available": {
+    "en": "No services available",
+    "ur": "کوئی سروس دستیاب نہیں ہے"
+  },
+  "not_registered_error": {
+    "en": "This phone number is not registered",
+    "ur": "یہ فون نمبر رجسٹرڈ نہیں ہے"
+  },
+  "otp_sent_to_phone": {
+    "en": "OTP sent to ",
+    "ur": "OTP بھیج دیا گیا ہے "
+  },
+  "password_required": {
+    "en": "Password is required",
+    "ur": "پاس ورڈ درکار ہے"
+  },
+  "phone": {
+    "en": "Phone",
+    "ur": "فون"
+  },
+  "phone_hint_login": {
+    "en": "Phone number",
+    "ur": "فون نمبر"
+  },
+  "phone_tab": {
+    "en": "Phone",
+    "ur": "فون"
+  },
+  "privacy_policy": {
+    "en": "Privacy Policy",
+    "ur": "پرائیویسی پالیسی"
+  },
+  "privacy_policy_content": {
+    "en": "Our privacy policy explains how we handle your data.",
+    "ur": "ہماری پرائیویسی پالیسی بتاتی ہے کہ ہم آپ کے ڈیٹا کو کیسے ہینڈل کرتے ہیں۔"
+  },
+  "profile_picture_updated_successfully": {
+    "en": "Profile picture updated successfully",
+    "ur": "پروفائل تصویر کامیابی سے اپ ڈیٹ ہو گئی"
+  },
+  "provider_desc": {
+    "en": "Provide your services and earn",
+    "ur": "اپنی سروسز فراہم کریں اور کمائیں"
+  },
+  "provider_reg_card": {
+    "en": "Register as Service Provider",
+    "ur": "بطور سروس فراہم کنندہ رجسٹر کریں"
+  },
+  "provider_responsibilities": {
+    "en": "Provider Responsibilities",
+    "ur": "فراہم کنندہ کی ذمہ داریاں"
+  },
+  "provider_responsibilities_desc": {
+    "en": "Providers must deliver quality services fairly.",
+    "ur": "فراہم کنندگان کو معیاری خدمات منصفانہ طریقے سے فراہم کرنی چاہئیں۔"
+  },
+  "rating_from_customer": {
+    "en": "Rating from Customer",
+    "ur": "گاہک کی طرف سے درجہ بندی"
+  },
+  "rating_from_provider": {
+    "en": "Rating from Provider",
+    "ur": "فراہم کنندہ کی طرف سے درجہ بندی"
+  },
+  "rating_label": {
+    "en": "Rating",
+    "ur": "درجہ بندی"
+  },
+  "Refresh": {
+    "en": "Refresh",
+    "ur": "تازہ کریں"
+  },
+  "retry": {
+    "en": "Retry",
+    "ur": "دوبارہ کوشش کریں"
+  },
+  "reviews_for": {
+    "en": "Reviews for",
+    "ur": "کے جائزے"
+  },
+  "select_city_label": {
+    "en": "Select City",
+    "ur": "شہر منتخب کریں"
+  },
+  "send_reset_link": {
+    "en": "Send Reset Link",
+    "ur": "ری سیٹ لنک بھیجیں"
+  },
+  "sign_up_as_customer": {
+    "en": "Sign up as Customer",
+    "ur": "بطور گاہک سائن اپ کریں"
+  },
+  "terms_and_conditions_content": {
+    "en": "Read our full terms and conditions.",
+    "ur": "ہماری مکمل شرائط و ضوابط پڑھیں۔"
+  },
+  "too_many_requests_error": {
+    "en": "Too many requests. Try again later.",
+    "ur": "بہت زیادہ درخواستیں، براہ کرم بعد میں کوشش کریں۔"
+  },
+  "unknown_user": {
+    "en": "Unknown User",
+    "ur": "نامعلوم صارف"
+  },
+  "use_of_service": {
+    "en": "Use of Service",
+    "ur": "سروس کا استعمال"
+  },
+  "use_of_service_desc": {
+    "en": "Users must use the platform for lawful purposes only.",
+    "ur": "صارفین کو پلیٹ فارم صرف قانونی مقاصد کے لیے استعمال کرنا چاہیے۔"
+  },
+  "user_accounts": {
+    "en": "User Accounts",
+    "ur": "صارف کے اکاؤنٹس"
+  },
+  "user_accounts_desc": {
+    "en": "You are responsible for maintaining your account security.",
+    "ur": "آپ اپنے اکاؤنٹ کی سیکیورٹی برقرار رکھنے کے ذمہ دار ہیں۔"
+  },
+  "user_default": {
+    "en": "User",
+    "ur": "صارف"
+  },
+  "user_disabled_error": {
+    "en": "Account has been disabled",
+    "ur": "اکاؤنٹ معطل کر دیا گیا ہے"
+  },
+  "user_not_found_error": {
+    "en": "User not found",
+    "ur": "صارف نہیں ملا"
+  },
+  "verified": {
+    "en": "Verified",
+    "ur": "تصدیق شدہ"
+  },
+  "verify_and_continue": {
+    "en": "Verify and Continue",
+    "ur": "تصدیق کریں اور جاری رکھیں"
+  },
+  "verify_and_login": {
+    "en": "Verify and Login",
+    "ur": "تصدیق کریں اور لاگ ان کریں"
+  },
+  "verify_and_register": {
+    "en": "Verify and Register",
+    "ur": "تصدیق کریں اور رجسٹر کریں"
+  },
+  "welcome_back": {
+    "en": "Welcome Back",
+    "ur": "خوش آمدید"
+  },
+  "whatsapp_not_available": {
+    "en": "WhatsApp is not installed",
+    "ur": "واٹس ایپ انسٹال نہیں ہے"
+  },
+  "wrong_password_error": {
+    "en": "Incorrect password",
+    "ur": "غلط پاس ورڈ"
+  },
+  "your_email": {
+    "en": "Your Email",
+    "ur": "آپ کی ای میل"
+  },
+  "your_rating_submitted": {
+    "en": "Your rating has been submitted",
+    "ur": "آپ کی درجہ بندی جمع کر دی گئی ہے"
+  },
+  "your_rights": {
+    "en": "Your Rights",
+    "ur": "آپ کے حقوق"
+  },
+  "your_rights_desc": {
+    "en": "You have the right to access and update your data.",
+    "ur": "آپ کو اپنے ڈیٹا تک رسائی اور اسے اپ ڈیٹ کرنے کا حق ہے۔"
+  },
+  "enter_6_digit_otp": {
+    "en": "Enter 6-digit OTP",
+    "ur": "6 ہندسوں والا او ٹی پی درج کریں"
+  },
+  "invalid_phone": {
+    "en": "Invalid phone number",
+    "ur": "غلط فون نمبر"
+  },
+  "otp_sent_to": {
+    "en": "OTP sent to",
+    "ur": "او ٹی پی بھیج دیا گیا"
+  },
+  "see_reviews": {
+    "en": "See Reviews",
+    "ur": "جائزے دیکھیں"
+  },
+  "about_title_subtitle": {
+    "en": "Theka Online – Hire Faster, Get Hired Smarter",
+    "ur": "ٹھیکہ آن لائن - تیزی سے ہائر کریں، سمجھداری سے کام پائیں"
+  },
+  "about_description_1": {
+    "en": "Theka Online is your smart hiring and job-finding companion, designed to bridge the gap between employers and skilled workers in a fast, direct, and reliable way. Whether you are looking to hire a plumber, electrician, carpenter, painter, driver, cleaner, or any other skilled professional — Theka Online helps you find the right person at the right time.",
+    "ur": "ٹھیکہ آن لائن آپ کا ہائرنگ اور کام تلاش کرنے کا بہترین ساتھی ہے، جو آجروں اور ہنر مند کارکنوں کے درمیان فاصلے کو تیزی سے، براہ راست اور قابل اعتماد طریقے سے ختم کرنے کے لیے بنایا گیا ہے۔ چاہے آپ پلمبر، الیکٹریشن، کارپینٹر، پینٹر، ڈرائیور، کلینر، یا کسی دوسرے ہنر مند پیشہ ور کو ہائر کرنا چاہتے ہوں — ٹھیکہ آن لائن آپ کو صحیح وقت پر صحیح شخص تلاش کرنے میں مدد کرتا ہے۔"
+  },
+  "about_description_2": {
+    "en": "Our platform is simple: Employers can browse detailed profiles of verified skilled workers and contact them instantly via phone or WhatsApp. Job seekers can create professional profiles showcasing their expertise, making it easy for employers to find and hire them without complicated processes.",
+    "ur": "ہمارا پلیٹ فارم سادہ ہے: آجر تصدیق شدہ ہنر مند کارکنوں کے تفصیلی پروفائلز دیکھ سکتے ہیں اور ان سے فون یا واٹس ایپ کے ذریعے فوری رابطہ کر سکتے ہیں۔ ملازمت کے متلاشی اپنی مہارت کو ظاہر کرنے والے پیشہ ورانہ پروفائلز بنا سکتے ہیں، جس سے آجروں کے لیے پیچیدہ عمل کے بغیر انہیں تلاش کرنا اور ہائر کرنا آسان ہو جاتا ہے۔"
+  },
+  "about_for_employers": {
+    "en": "For Employers",
+    "ur": "آجروں کے لیے"
+  },
+  "about_employer_point_1": {
+    "en": "Discover Skilled Workers – Search across multiple job categories to find exactly who you need.",
+    "ur": "ہنر مند کارکنوں کو تلاش کریں — اپنی ضرورت کے مطابق کسی کو بھی تلاش کرنے کے لیے متعدد کیٹیگریز میں سرچ کریں۔"
+  },
+  "about_employer_point_2": {
+    "en": "View Detailed Profiles – Check skills, work experience, and specialties at a glance.",
+    "ur": "تفصیلی پروفائلز دیکھیں — مہارت، کام کا تجربہ، اور خصوصیات کو ایک نظر میں دیکھیں۔"
+  },
+  "about_employer_point_3": {
+    "en": "Instant Communication – Contact workers directly via phone call or WhatsApp—no delays.",
+    "ur": "فوری رابطہ — کارکنوں سے براہِ راست فون کال یا واٹس ایپ کے ذریعے رابطہ کریں—بغیر کسی تاخیر کے۔"
+  },
+  "about_employer_point_4": {
+    "en": "Save Time – Skip middlemen and slow hiring processes. Connect directly to the talent.",
+    "ur": "وقت بچائیں — درمیانی آدمیوں اور سست پراسیس سے بچیں۔ براہِ راست ٹیلنٹ سے رابطہ کریں۔"
+  },
+  "about_employer_point_5": {
+    "en": "Local Talent Access – Quickly find workers in your city or nearby areas.",
+    "ur": "مقامی ٹیلنٹ تک رسائی — اپنے شہر یا قریبی علاقوں میں کارکنوں کو جلدی سے تلاش کریں۔"
+  },
+  "about_for_job_seekers": {
+    "en": "For Job Seekers",
+    "ur": "ملازمت کے متلاشیوں کے لیے"
+  },
+  "about_worker_point_1": {
+    "en": "Create a Professional profile – Highlight your work history, special skills, and services.",
+    "ur": "پیشہ ورانہ پروفائل بنائیں — اپنی کام کی تاریخ، خاص مہارتوں اور خدمات کو واضح کریں۔"
+  },
+  "about_worker_point_2": {
+    "en": "Get Discovered by Employers – Your profile appears to employers searching in your area.",
+    "ur": "آجروں کی نظر میں آئیں — آپ کا پروفائل آپ کے علاقے میں تلاش کرنے والے آجروں کو نظر آئے گا۔"
+  },
+  "about_worker_point_3": {
+    "en": "Direct Calls from Employers – Receive job opportunities instantly via phone or WhatsApp.",
+    "ur": "آجروں سے براہ راست کالز — فون یا واٹس ایپ کے ذریعے فوری طور پر کام کے مواقع حاصل کریں۔"
+  },
+  "about_worker_point_4": {
+    "en": "Grow Your Career – Build connections with verified employers for long-term work.",
+    "ur": "اپنے کیریئر کو بڑھائیں — طویل مدتی کام کے لیے تصدیق شدہ آجروں کے ساتھ تعلقات بنائیں۔"
+  },
+  "about_worker_point_5": {
+    "en": "Boost Visibility – Update your profile regularly to stay at the top of search results.",
+    "ur": "اپنے پروفائل کی موجودگی بڑھائیں — سرچ کے نتائج میں سب سے اوپر رہنے کے لیے باقاعدگی سے اپنا پروفائل اپ ڈیٹ کریں۔"
+  },
+  "about_key_features": {
+    "en": "Key Features",
+    "ur": "اہم خصوصیات"
+  },
+  "about_feature_1": {
+    "en": "Profile Browsing – Clear, organized worker profiles for quick decision-making.",
+    "ur": "پروفائل براؤزنگ — فوری فیصلے کے لیے کارکنوں کے واضح اور منظم پروفائلز۔"
+  },
+  "about_feature_2": {
+    "en": "Instant Connect – Call or WhatsApp from within the app in just one tap.",
+    "ur": "فوری رابطہ — صرف ایک کلک پر ایپ کے اندر سے کال یا واٹس ایپ کریں۔"
+  },
+  "about_feature_3": {
+    "en": "Easy Navigation – Simple UI, category-based search, and powerful filtering.",
+    "ur": "آسان نیویگیشن — سادہ UI، کیٹیگری پر مبنی تلاش، اور فلٹرنگ۔"
+  },
+  "about_feature_4": {
+    "en": "Multilingual Support – English and Urdu support, with more languages coming soon.",
+    "ur": "کثیر لسانی مدد — انگریزی اور اردو، جلد ہی مزید زبانیں شامل کی جائیں گی۔"
+  },
+  "about_feature_5": {
+    "en": "Privacy-First – Your exact location is never publicly shared.",
+    "ur": "رازداری — آپ کا درست مقام کبھی بھی عوامی طور پر شیئر نہیں کیا جاتا۔"
+  },
+  "about_feature_6": {
+    "en": "Lightweight & Fast – Optimized for low internet usage and quick performance.",
+    "ur": "ہلکی اور تیز رفتار — کم انٹرنیٹ استعمال اور فوری کارکردگی کے لیے بنائی گئی ایپ۔"
+  },
+  "about_feature_7": {
+    "en": "Regular Updates – Constant improvements and new features based on your feedback.",
+    "ur": "باقاعدہ اپ ڈیٹس — آپ کے فیڈ بیک کی بنیاد پر مسلسل بہتری اور نئے فیچرز۔"
+  },
+  "about_how_it_works": {
+    "en": "How It Works",
+    "ur": "یہ کیسے کام کرتا ہے"
+  },
+  "about_how_it_works_employer": {
+    "en": "Employers: Select a category → browse profiles → contact workers directly.",
+    "ur": "آجر: کیٹیگری منتخب کریں ← پروفائلز دیکھیں ← کارکنوں سے براہ راست رابطہ کریں۔"
+  },
+  "about_how_it_works_worker": {
+    "en": "Job Seekers: Create/complete your profile → appear in search results → get contacted by employers.",
+    "ur": "ملازمت کے متلاشی: اپنا پروفائل مکمل کریں ← سرچ کے نتائج میں آئیں ← آجروں سے رابطہ پائیں۔"
+  },
+  "about_who_its_for": {
+    "en": "Who It’s For",
+    "ur": "یہ کس کے لیے ہے"
+  },
+  "about_who_its_for_1": {
+    "en": "Employers & Contractors – Find reliable workers without wasting time.",
+    "ur": "آجر اور ٹھیکیدار — وقت ضائع کیے بغیر قابل اعتماد کارکن تلاش کریں۔"
+  },
+  "about_who_its_for_2": {
+    "en": "Businesses – Hire skilled labor for projects, repairs, or ongoing work.",
+    "ur": "کاروبار — پراجیکٹس، مرمت یا جاری کام کے لیے ہنر مند لیبر کی خدمات حاصل کریں۔"
+  },
+  "about_who_its_for_3": {
+    "en": "Homeowners – Quickly find trusted workers for home maintenance and improvement.",
+    "ur": "گھر مالکان — گھر کی دیکھ بھال اور بہتری کے لیے بھروسہ مند کارکن جلدی سے تلاش کریں۔"
+  },
+  "about_who_its_for_4": {
+    "en": "Job Seekers – Gain visibility, get direct calls, and secure more jobs.",
+    "ur": "ملازمت کے متلاشی — زیادہ کام اور براہ راست کالز کے مواقع پائیں۔"
+  },
+  "about_why_choose_us": {
+    "en": "Why Choose Theka Online?",
+    "ur": "ٹھیکہ آن لائن ہی کیوں؟"
+  },
+  "about_reason_1": {
+    "en": "Direct Communication – No complicated chat systems. Call or message instantly.",
+    "ur": "براہ راست رابطہ — کوئی پیچیدہ چیٹ سسٹم نہیں۔ کال یا میسج فوری کریں۔"
+  },
+  "about_reason_2": {
+    "en": "Verified Listings – We work to ensure profiles are accurate and trustworthy.",
+    "ur": "تصدیق شدہ لسٹنگ — ہم پروفائلز کی درستی اور بھروسہ مندی کو یقینی بناتے ہیں۔"
+  },
+  "about_reason_3": {
+    "en": "Transparent Information – Skills, experience, and contact options at your fingertips.",
+    "ur": "شفاف معلومات — مہارت، تجربہ، اور رابطے کے آپشنز آپ کی انگلیوں پر۔"
+  },
+  "about_reason_4": {
+    "en": "Save Time & Effort – Find or be found within minutes, not days.",
+    "ur": "وقت اور کوشش بچائیں — منٹوں میں تلاش کریں یا تلاش کیے جائیں۔"
+  },
+  "about_reason_5": {
+    "en": "Works Everywhere – Whether in big cities or smaller towns, Theka Online is built for you.",
+    "ur": "ہر جگہ کام کرتا ہے — چاہے بڑے شہر ہوں یا چھوٹے قصبے، ٹھیکہ آن لائن آپ کے لیے ہے۔"
+  },
+  "about_privacy_security": {
+    "en": "Privacy & Security",
+    "ur": "رازداری اور سیکیورٹی"
+  },
+  "about_privacy_note": {
+    "en": "Your trust matters.",
+    "ur": "آپ کا بھروسہ اہم ہے۔"
+  },
+  "about_privacy_point_1": {
+    "en": "We never share your exact location publicly.",
+    "ur": "ہم آپ کا درست مقام کبھی بھی عوامی طور پر ظاہر نہیں کرتے۔"
+  },
+  "about_privacy_point_2": {
+    "en": "Personal details are shown only as part of your public profile if you choose to share them.",
+    "ur": "ذاتی تفصیلات صرف تب ہی ظاہر کی جاتی ہیں جب آپ انہیں اپنے پروفائل پر شیئر کرنے کا انتخاب کرتے ہیں۔"
+  },
+  "about_privacy_point_3": {
+    "en": "We use your data only to improve and deliver our services.",
+    "ur": "ہم آپ کا ڈیٹا صرف اپنی خدمات کو بہتر بنانے کے لیے استعمال کرتے ہیں۔"
+  },
+  "about_privacy_point_4": {
+    "en": "You control what appears on your profile at any time.",
+    "ur": "آپ کا اپنے پروفائل پر مکمل کنٹرول ہے کہ وہاں کیا ظاہر ہو۔"
+  },
+  "live_activity": {
+    "en": "Live Activity",
+    "ur": "لائیو سرگرمی"
+  },
+  "scanning_market": {
+    "en": "Scanning Market",
+    "ur": "مارکیٹ اسکین ہو رہی ہے"
+  },
+  "currently_no_request_available": {
+    "en": "Currently no request available, please stay with us",
+    "ur": "فی الحال کوئی درخواست دستیاب نہیں ہے، براہ کرم ہمارے ساتھ رہیں"
+  },
+  "market_insights": {
+    "en": "Market Insights",
+    "ur": "مارکیٹ کی بصیرت"
+  },
+  "live_demand_distribution": {
+    "en": "Live demand distribution",
+    "ur": "لائیو ڈیمانڈ کی تقسیم"
+  },
+  "service_demand": {
+    "en": "Service Demand",
+    "ur": "سروس کی ڈیمانڈ"
+  },
+  "city_outreach": {
+    "en": "City Outreach",
+    "ur": "شہروں تک رسائی"
+  },
+  "top_growth_cities": {
+    "en": "Top Growth Cities",
+    "ur": "سب سے زیادہ ترقی کرنے والے شہر"
+  },
+  "live_pulse": {
+    "en": "LIVE PULSE",
+    "ur": "لائیو پلس"
+  },
+  "discover_next_customer": {
+    "en": "Discover Your Next Customer",
+    "ur": "اپنے اگلے کسٹمر کو تلاش کریں"
+  },
+  "active_users": {
+    "en": "Active Users",
+    "ur": "فعال صارفین"
+  }
+}

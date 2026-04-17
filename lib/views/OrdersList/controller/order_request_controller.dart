@@ -1,0 +1,609 @@
+import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
+import '../../BottomNavbar/bottom_navbar.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:quickserve/core/services/notification_service.dart'; // Import NotificationService
+import 'package:geocoding/geocoding.dart';
+
+import 'package:flutter/material.dart'; // Add material for AnimationController
+import '../../../core/constants/appColors.dart';
+
+class OrdersController extends GetxController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Observable lists for requests
+  RxList<Map<String, dynamic>> nowRequests = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> anytimeRequests = <Map<String, dynamic>>[].obs;
+
+  // Loading states
+  RxBool isLoadingNow = false.obs;
+  RxBool isLoadingAnytime = false.obs;
+  RxBool isAcceptingRequest = false.obs;
+
+  // Online/Offline status
+  RxBool isOnline = false.obs;
+
+  // Selected tab (0 = Now, 1 = Anytime)
+  RxInt selectedTab = 0.obs;
+  RxString selectedCustomerName = ''.obs; // New for showing name on click
+
+  // Map state for empty orders view
+  RxSet<Marker> activeCustomerMarkers = <Marker>{}.obs;
+  RxSet<Circle> activeCustomerCircles = <Circle>{}.obs; // Keeping for now to avoid breaking UI if not updated yet
+  Rx<LatLng> mapCenter = const LatLng(30.3753, 69.3451).obs; // Center on Pakistan initially
+  final Completer<GoogleMapController> mapController = Completer<GoogleMapController>();
+
+  // New for Market Overview Dashboard
+  RxList<Map<String, dynamic>> recentActivity = <Map<String, dynamic>>[].obs;
+  RxBool isScanning = false.obs;
+  RxInt totalCustomersCount = 0.obs;
+  RxInt activeCustomersCount = 0.obs;
+  RxMap<String, int> cityDistribution = <String, int>{}.obs;
+
+  // Provider's service category and details
+  RxString providerServiceCategory = ''.obs;
+  RxString providerName = ''.obs;
+  RxString providerId = ''.obs;
+  RxString providerPhone = ''.obs;
+  RxString providerProfileImage = ''.obs;
+
+  // Stream subscriptions
+  StreamSubscription<QuerySnapshot>? _nowSubscription;
+  StreamSubscription<QuerySnapshot>? _anytimeSubscription;
+
+  // Flags to prevent notification on initial load
+  bool _isFirstLoadNow = true;
+  bool _isFirstLoadAnytime = true;
+
+  @override
+  void onInit() {
+    super.onInit();
+    print('🎮 OrdersController onInit called');
+    initializeController();
+  }
+
+  /// Initialize controller - fetch provider category then start listening
+  Future<void> initializeController() async {
+    await fetchProviderServiceCategory();
+    if (providerServiceCategory.value.isNotEmpty) {
+      listenToNowRequests();
+      listenToAnytimeRequests();
+    }
+    // Fetch activity feed for the empty state
+    fetchActivityFeedData();
+  }
+
+  /// Fetch current provider's service category and details
+  Future<void> fetchProviderServiceCategory() async {
+    try {
+      final uid = _auth.currentUser?.uid;
+      if (uid == null) {
+        print('❌ No user logged in');
+        return;
+      }
+
+      providerId.value = uid;
+
+      DocumentSnapshot providerDoc = await _firestore
+          .collection('ServiceProviders')
+          .doc(uid)
+          .get();
+
+      if (providerDoc.exists) {
+        Map<String, dynamic> data = providerDoc.data() as Map<String, dynamic>;
+        providerServiceCategory.value = data['serviceCategory'] ?? '';
+        providerName.value = data['name'] ?? '';
+        providerPhone.value = data['phone'] ?? '';
+        providerProfileImage.value = data['profileImage'] ?? '';
+        isOnline.value = data['isOnline'] ?? false; // ✅ Sync online status
+
+        print('✅ Provider Details:');
+        print('   Name: ${providerName.value}');
+        print('   Category: ${providerServiceCategory.value}');
+        print('   Phone: ${providerPhone.value}');
+        print('   Online: ${isOnline.value}');
+      }
+    } catch (e) {
+      print('❌ Error fetching provider category: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to fetch your service category: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  /// Listen to "Now" requests in real-time (filtered by provider's category)
+  void listenToNowRequests() {
+    try {
+      // Create new subscription if not exists
+      _nowSubscription?.cancel();
+      
+      isLoadingNow.value = true;
+      print('🔄 Starting real-time listener for Now requests...');
+      print('🎯 Filtering by service: ${providerServiceCategory.value}');
+
+      _nowSubscription = _firestore
+          .collectionGroup('Now')
+          .where('service', isEqualTo: providerServiceCategory.value)
+          .where('status', isEqualTo: 'pending') // Only show pending requests
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .listen(
+            (snapshot) {
+          List<Map<String, dynamic>> tempList = [];
+
+          print('📦 Received ${snapshot.docs.length} Now requests');
+
+          // Check for new additions (Notification Trigger)
+          if (!_isFirstLoadNow) {
+            for (var change in snapshot.docChanges) {
+              if (change.type == DocumentChangeType.added) {
+                final data = change.doc.data() as Map<String, dynamic>;
+                // Trigger Notification
+                NotificationService().showSimpleNotification(
+                  title: 'New Service Request!',
+                  body: 'A new ${data['service'] ?? 'service'} request is available near you.',
+                  payload: 'new_request_now',
+                );
+              }
+            }
+          }
+          _isFirstLoadNow = false; // Mark initial load as done
+
+          for (var doc in snapshot.docs) {
+            Map<String, dynamic> data = doc.data();
+            data['id'] = doc.id;
+            data['requestType'] = 'Now';
+
+            // Extract userId from document path
+            String path = doc.reference.path;
+            List<String> pathParts = path.split('/');
+            if (pathParts.length >= 2) {
+              data['userId'] = pathParts[1];
+            }
+
+            print('   ✅ ${data['service']} - ${data['userName'] ?? 'User'}');
+            tempList.add(data);
+          }
+
+          nowRequests.value = tempList;
+          isLoadingNow.value = false;
+          print('✅ Now requests updated: ${tempList.length} total');
+        },
+        onError: (error) {
+          print('❌ Error in Now requests listener: $error');
+          print('🔗 POTENTIAL MISSING INDEX: If you see a URL above, click it to create the index!');
+          isLoadingNow.value = false;
+        },
+      );
+    } catch (e) {
+      print('❌ Error setting up Now requests listener: $e');
+      isLoadingNow.value = false;
+    }
+  }
+
+  /// Listen to "Anytime" requests in real-time (filtered by provider's category)
+  void listenToAnytimeRequests() {
+    try {
+      // Create new subscription if not exists
+      _anytimeSubscription?.cancel();
+
+      isLoadingAnytime.value = true;
+      print('🔄 Starting real-time listener for Anytime requests...');
+      print('🎯 Filtering by service: ${providerServiceCategory.value}');
+
+      _anytimeSubscription = _firestore
+          .collectionGroup('AnyTime')
+          .where('service', isEqualTo: providerServiceCategory.value)
+          .where('status', isEqualTo: 'pending') // Only show pending requests
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .listen(
+            (snapshot) {
+          List<Map<String, dynamic>> tempList = [];
+
+          print('📦 Received ${snapshot.docs.length} Anytime requests');
+
+          // Check for new additions (Notification Trigger)
+          if (!_isFirstLoadAnytime) {
+            for (var change in snapshot.docChanges) {
+              if (change.type == DocumentChangeType.added) {
+                final data = change.doc.data() as Map<String, dynamic>;
+                // Trigger Notification
+                NotificationService().showSimpleNotification(
+                  title: 'New Service Request!',
+                  body: 'A new ${data['service'] ?? 'service'} request is available near you.',
+                  payload: 'new_request_anytime',
+                );
+              }
+            }
+          }
+          _isFirstLoadAnytime = false; // Mark initial load as done
+
+          for (var doc in snapshot.docs) {
+            Map<String, dynamic> data = doc.data();
+            data['id'] = doc.id;
+            data['requestType'] = 'Anytime';
+
+            // Extract userId from document path
+            String path = doc.reference.path;
+            List<String> pathParts = path.split('/');
+            if (pathParts.length >= 2) {
+              data['userId'] = pathParts[1];
+            }
+
+            print('   ✅ ${data['service']} - ${data['userName'] ?? 'User'}');
+            tempList.add(data);
+          }
+
+          anytimeRequests.value = tempList;
+          isLoadingAnytime.value = false;
+          print('✅ Anytime requests updated: ${tempList.length} total');
+        },
+        onError: (error) {
+          print('❌ Error in Anytime requests listener: $error');
+          print('🔗 POTENTIAL MISSING INDEX: If you see a URL above, click it to create the index!');
+          isLoadingAnytime.value = false;
+        },
+      );
+    } catch (e) {
+      print('❌ Error setting up Anytime requests listener: $e');
+      isLoadingAnytime.value = false;
+    }
+  }
+
+  /// Accept a request and add to completedRequests collection
+  Future<bool> acceptRequest({
+    required Map<String, dynamic> request,
+  }) async {
+    try {
+      isAcceptingRequest.value = true;
+      print('🔄 Accepting request...');
+
+      final userId = request['userId'];
+      final requestType = request['requestType'];
+      final requestId = request['id'];
+
+      if (userId == null || requestType == null || requestId == null) {
+        throw Exception('Missing request information');
+      }
+
+      // Determine subcollection name
+      final subcollection = requestType == 'Now' ? 'Now' : 'AnyTime';
+
+      print('📝 Request Details:');
+      print('   Customer: ${request['userName']}');
+      print('   Customer Phone: ${request['userPhone'] ?? 'Not provided'}');
+      print('   Provider: ${providerName.value}');
+      print('   Provider Phone: ${providerPhone.value}');
+      print('   Type: $requestType ($subcollection)');
+
+      // Use batch write for atomic operations
+      WriteBatch batch = _firestore.batch();
+
+      // 1. Update request status to 'accepted' in original location
+      DocumentReference requestRef = _firestore
+          .collection('Requests')
+          .doc(userId)
+          .collection(subcollection)
+          .doc(requestId);
+
+      batch.update(requestRef, {
+        'status': 'completed',
+        'acceptedAt': FieldValue.serverTimestamp(),
+        'completedAt': FieldValue.serverTimestamp(),
+        'providerId': providerId.value,
+        'providerName': providerName.value,
+        'providerPhone': providerPhone.value,
+        'providerProfileImage': providerProfileImage.value,
+        'providerCategory': providerServiceCategory.value,
+      });
+
+      // 2. Create document in completedRequests collection
+      DocumentReference completedRef = _firestore
+          .collection('completedRequests')
+          .doc(); // Auto-generate ID
+
+      // Prepare completed request data with all details
+      Map<String, dynamic> completedRequestData = {
+        // Request Info
+        'requestId': requestId,
+        'requestType': requestType,
+        'service': request['service'] ?? '',
+        'subcategory': request['subcategory'] ?? '',
+        'description': request['description'] ?? '',
+        'location': request['location'] ?? '',
+        'imageUrl': request['imageUrl'] ?? '',
+        'price': request['price'] ?? 0,
+
+        // Customer Info
+        'userId': userId,
+        'userName': request['userName'] ?? 'Unknown User',
+        'userEmail': request['userEmail'] ?? '',
+        'userPhone': request['userPhone'] ?? '',
+        'userProfileImage': request['profileImage'] ?? '',
+        'userRating': request['userRating'] ?? 0.0,
+        'totalRatings': request['totalRatings'] ?? 0,
+
+        // Provider Info
+        'providerId': providerId.value,
+        'providerName': providerName.value,
+        'providerPhone': providerPhone.value,
+        'providerProfileImage': providerProfileImage.value,
+        'providerCategory': providerServiceCategory.value,
+
+        // Status & Timestamps
+        'status': 'completed',
+        'acceptedAt': FieldValue.serverTimestamp(),
+        'createdAt': request['createdAt'], // Original creation time
+        'completedAt': FieldValue.serverTimestamp(), // Mark as completed instantly when accepted
+      };
+
+      batch.set(completedRef, completedRequestData);
+
+      // Commit the batch
+      await batch.commit();
+
+      print('✅ Request accepted successfully!');
+      print('✅ Added to completedRequests collection');
+      print('📞 Customer Phone: ${request['userPhone'] ?? 'Not provided'}');
+      print('📞 Provider Phone: ${providerPhone.value}');
+
+      Get.snackbar(
+        'Success',
+        'Request accepted successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.primaryColor,
+        colorText: Get.theme.colorScheme.onPrimary,
+        duration: const Duration(seconds: 2),
+      );
+      /// ✅ Navigate to BottomNavbar with the “Requests” tab (index = 1)
+      Future.delayed(const Duration(seconds: 1), () {
+        Get.offAll(() => const BottomNavbar(), arguments: {'index': 1});
+      });
+
+      return true;
+    } catch (e) {
+      print('❌ Error accepting request: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to accept request: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
+      );
+      return false;
+    } finally {
+      isAcceptingRequest.value = false;
+    }
+  }
+
+  /// Toggle online/offline status
+  void toggleOnlineStatus() {
+    isOnline.value = !isOnline.value;
+    updateOnlineStatusInFirestore();
+  }
+
+  /// Update online status in Firestore
+  Future<void> updateOnlineStatusInFirestore() async {
+    try {
+      final uid = _auth.currentUser?.uid;
+      if (uid == null) return;
+
+      await _firestore.collection('ServiceProviders').doc(uid).update({
+        'isOnline': isOnline.value,
+        'lastSeen': FieldValue.serverTimestamp(),
+      });
+
+      print('✅ Online status updated: ${isOnline.value}');
+    } catch (e) {
+      print('❌ Error updating online status: $e');
+    }
+  }
+
+  /// Change selected tab
+  void changeTab(int index) {
+    selectedTab.value = index;
+  }
+
+  /// Manual refresh
+  Future<void> refreshRequests() async {
+    await fetchProviderServiceCategory();
+    listenToNowRequests();
+    listenToAnytimeRequests();
+    fetchActivityFeedData(); // Refresh activity feed
+    print('🔄 Refreshed state');
+  }
+
+  /// Get filtered requests based on selected tab
+  List<Map<String, dynamic>> get filteredRequests {
+    return selectedTab.value == 0 ? nowRequests : anytimeRequests;
+  }
+
+  /// Get loading state based on selected tab
+  bool get isLoading {
+    return selectedTab.value == 0 ? isLoadingNow.value : isLoadingAnytime.value;
+  }
+
+  /// Fetch registered customers to populate the empty map view
+    // This method now also populates the recentActivity feed
+    Future<void> fetchActivityFeedData() async {
+      try {
+        isScanning.value = true;
+        recentActivity.clear();
+
+        final snapshot = await _firestore
+            .collection('Customers')
+            .orderBy('createdAt', descending: true)
+            .limit(20)
+            .get();
+
+        // Also fetch total customer count for "Insights"
+        final totalSnapshot = await _firestore.collection('Customers').count().get();
+        totalCustomersCount.value = totalSnapshot.count ?? 0;
+        // Mock active customers as a percentage of total
+        activeCustomersCount.value = (totalCustomersCount.value * 0.15).toInt() + 5;
+
+        if (snapshot.docs.isEmpty) {
+          isScanning.value = false;
+          return;
+        }
+
+        cityDistribution.clear();
+        for (var doc in snapshot.docs) {
+          final data = doc.data();
+          String city = data['city'] ?? 'Nearby';
+          
+          // Update city distribution for graph
+          cityDistribution[city] = (cityDistribution[city] ?? 0) + 1;
+
+          recentActivity.add({
+            'name': data['name'] ?? 'A customer',
+            'city': data['city'] ?? 'Nearby',
+            'timestamp': data['createdAt'] ?? Timestamp.now(),
+            'profileImage': data['profileImage'], // Fetching profileImage as requested
+            'type': 'registration',
+          });
+          // Small delay for "streaming" effect if needed, but not necessary here
+        }
+        isScanning.value = false;
+      } catch (e) {
+        print('❌ Error fetching activity feed: $e');
+        isScanning.value = false;
+      }
+    }
+
+    Future<void> fetchActiveCustomerLocations() async {
+    try {
+      print('🌍 Firestore: Querying ALL Customers collection (limit 100)...');
+      // TEMPORARILY REMOVED orderBy('latitude') to rule out indexing problems
+      QuerySnapshot customersSnap = await _firestore.collection('Customers')
+          .limit(100) 
+          .get();
+
+      print('📸 Firestore: Fetched ${customersSnap.docs.length} customer documents');
+      
+      activeCustomerMarkers.clear(); // Start fresh
+      LatLng? firstLocation;
+      int geocodeCount = 0;
+      const int maxGeocodes = 20; // Limit fallback geocoding
+      
+      if (customersSnap.docs.isEmpty) {
+        print('⚠️ Firestore: No customers found in collection!');
+      }
+      
+      for (var doc in customersSnap.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        
+        if (data['latitude'] != null && data['longitude'] != null) {
+          final rawLat = data['latitude'];
+          final rawLng = data['longitude'];
+          
+          double? lat;
+          double? lng;
+          
+          if (rawLat is String) lat = double.tryParse(rawLat);
+          else if (rawLat is int) lat = rawLat.toDouble();
+          else if (rawLat is double) lat = rawLat;
+
+          if (rawLng is String) lng = double.tryParse(rawLng);
+          else if (rawLng is int) lng = rawLng.toDouble();
+          else if (rawLng is double) lng = rawLng;
+          
+          if (lat != null && lng != null && lat != 0.0 && lng != 0.0) {
+            LatLng pos = LatLng(lat, lng);
+            
+            final marker = Marker(
+              markerId: MarkerId(doc.id),
+              position: pos,
+              consumeTapEvents: true, // Prevents auto-centering
+              onTap: () async {
+                selectedCustomerName.value = data['name'] ?? 'Customer';
+                // Manually show info window
+                try {
+                  final controller = await mapController.future;
+                  controller.showMarkerInfoWindow(MarkerId(doc.id));
+                } catch (e) {
+                  print('❌ Error showing info window: $e');
+                }
+              },
+              infoWindow: InfoWindow(
+                title: data['name'] ?? 'Customer',
+                snippet: data['address'] ?? data['city'] ?? 'Registered Location',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            );
+
+            activeCustomerMarkers.add(marker);
+            
+            if (firstLocation == null) {
+              firstLocation = pos;
+              print('🎯 UI: First customer found at $firstLocation');
+            }
+          }
+        } else if (data['city'] != null && (data['city'] as String).isNotEmpty && geocodeCount < maxGeocodes) {
+           // FALLBACK: Geocode the city name if coordinates are missing
+           geocodeCount++;
+           try {
+             String cityName = data['city'];
+             List<Location> locations = await locationFromAddress("$cityName, Pakistan");
+             if (locations.isNotEmpty) {
+               LatLng pos = LatLng(locations.first.latitude, locations.first.longitude);
+               
+               final marker = Marker(
+                 markerId: MarkerId(doc.id),
+                 position: pos,
+                 consumeTapEvents: true, // Prevents auto-centering
+                 onTap: () async {
+                   selectedCustomerName.value = data['name'] ?? 'Customer';
+                   try {
+                     final controller = await mapController.future;
+                     controller.showMarkerInfoWindow(MarkerId(doc.id));
+                   } catch (e) {
+                     print('❌ Error showing info window: $e');
+                   }
+                 },
+                 infoWindow: InfoWindow(
+                   title: data['name'] ?? 'Customer',
+                   snippet: cityName,
+                 ),
+                 icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+               );
+
+               activeCustomerMarkers.add(marker);
+               
+               if (firstLocation == null) {
+                 firstLocation = pos;
+               }
+             }
+           } catch (e) {
+             print('❌ Fallback geocoding failed for ${data['name']}: $e');
+           }
+        }
+      }
+
+      print('🚀 UI: Finished loading ${activeCustomerMarkers.length} markers');
+      
+      // We will NO LONGER auto-zoom to the first location. 
+      // The user wants a zoomed-out view of Pakistan.
+      print('✅ Found ${activeCustomerMarkers.length} customer registration locations for the map');
+
+    } catch (e) {
+      print('❌ Error fetching customer registration locations: $e');
+    }
+  }
+
+  @override
+  void onClose() {
+    print('🗑️ OrdersController onClose called');
+    // Cancel stream subscriptions to prevent memory leaks
+    _nowSubscription?.cancel();
+    _anytimeSubscription?.cancel();
+    super.onClose();
+  }
+}
