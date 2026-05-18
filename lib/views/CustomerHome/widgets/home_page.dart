@@ -9,6 +9,8 @@ import 'package:quickserve/core/services/translation_service.dart';
 import 'package:quickserve/views/CustomerHome/controllers/maps_controller.dart';
 import 'package:quickserve/views/CustomerHome/widgets/home_bottom_sheet.dart';
 import 'package:quickserve/core/widgets/language_selector.dart';
+import 'package:quickserve/views/Auth/AuthService/auth_service.dart';
+import 'package:quickserve/views/Auth/Login/login_page.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -151,8 +153,34 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
 
-                          // Language Button
-                          const LanguageSelector(),
+                          // Language and Guest Exit
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const LanguageSelector(),
+                              if (AuthService.getSavedRole()?.contains('guest') ?? false)
+                                Container(
+                                  margin: EdgeInsets.only(left: 8.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.2),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.5),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    constraints: const BoxConstraints(),
+                                    padding: EdgeInsets.all(8.r),
+                                    icon: Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18.sp),
+                                    onPressed: () async {
+                                      await AuthService.instance.signOut();
+                                      Get.offAll(() => LoginPage());
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
 
                         ],
                       ),
